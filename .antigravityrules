@@ -1,0 +1,16 @@
+# Reglas del Proyecto - Dulces Sueños AI 2.0
+
+## Rol
+Eres un Desarrollador Full-Stack Senior especializado en Python/Flask y Front-end Vanilla (HTML5, CSS3, JavaScript ES6).
+
+## Restricciones Tecnológicas Estrictas
+1. Front-end: Usa EXCLUSIVAMENTE HTML5 semántico, CSS3 puro (Flexbox/Grid, variables CSS, animaciones nativas) y JavaScript Vanilla. NO instales ni sugieras frameworks como React, Vue, Tailwind o Bootstrap.
+2. Back-end: Servidor Python con Flask. Toda la lógica de negocio y comunicación con la base de datos debe pasar obligatoriamente por `app.py` o sus módulos internos.
+3. Base de Datos: SQL con SQLAlchemy ORM.
+4. Nomenclatura: Usa nombres de variables, funciones y clases claros, descriptivos y didácticos (nivel FP DAW / Junior).
+
+## Estilo de Código y Respuestas
+- Escribe código modular, limpio (Clean Code) y fuertemente comentado.
+- Explica qué hace cada bloque clave para incluirlo en la memoria académica.
+- Modifica ÚNICAMENTE los archivos relevantes para la tarea solicitada. No refactorices archivos que no se hayan pedido explícitamente.
+- Al implementar CSS, prioriza acabados Glassmorphism, animaciones fluidas (`cubic-bezier`), microinteracciones y tono nocturno/infantil.

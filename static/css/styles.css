@@ -1,0 +1,623 @@
+/* ==============================================================================
+   PROYECTO DE DESARROLLO DE APLICACIONES WEB (DAW)
+   PROYECTO: Dulces Sueños AI 2.0
+   ARCHIVO: static/css/styles.css (Hoja de Estilos CSS3)
+   ============================================================================== */
+
+/* ==============================================================================
+   1. VARIABLES CSS GLOBALES Y REGLAS DE REINICIO (RESET)
+   Definimos una paleta de colores coherente en :root para reutilizarla fácilmente.
+   ============================================================================== */
+:root {
+    --color-fondo-nocturno: #0a0b1c;
+    --color-purpura-magico: #1a1c38;
+    --color-dorado-estrella: #ffd700;
+    --color-rosa-infantil: #ff76ac;
+    --color-azul-brillante: #4da6ff;
+    --color-texto-blanco: #ffffff;
+    --color-texto-suave: #b3b8d4;
+}
+
+/* Reinicio de márgenes, rellenos y modelo de caja para todos los elementos */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos base del documento */
+body {
+    font-family: 'Fredoka', 'Segoe UI', Quicksand, sans-serif;
+    background-color: var(--color-fondo-nocturno);
+    color: var(--color-texto-blanco);
+    overflow-x: hidden;
+    position: relative;
+}
+
+
+/* ==============================================================================
+   2. PANTALLA DE BIENVENIDA (SPLASH SCREEN) Y ANIMACIÓN 3D
+   ============================================================================== */
+#pantalla-bienvenida {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, #181a3a 0%, #060714 100%);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    perspective: 1000px;
+    transition: opacity 1.2s ease, visibility 1.2s ease;
+}
+
+/* Imagen de la estrella que vuela hacia la pantalla simulando profundidad 3D */
+.estrella-mario {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    top: 10%;
+    right: 10%;
+    opacity: 0;
+    filter: drop-shadow(0 0 20px #ffd700);
+    animation: vueloEstrella3D 2.2s cubic-bezier(0.25, 1, 0.5, 1) 0.3s forwards;
+}
+
+/* Animación que escala y rota la estrella en el espacio tridimensional */
+@keyframes vueloEstrella3D {
+    0% {
+        top: 5%;
+        right: 5%;
+        transform: scale(0.2) rotate(0deg) translateZ(-500px);
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+    }
+    80% {
+        top: 40%;
+        right: 40%;
+        transform: scale(3.5) rotate(360deg) translateZ(200px);
+        opacity: 1;
+        filter: drop-shadow(0 0 50px #ffd700);
+    }
+    100% {
+        top: 50%;
+        right: 50%;
+        transform: scale(15) rotate(540deg) translateZ(800px);
+        opacity: 0;
+    }
+}
+
+/* Contenedor del logotipo del Splash Screen */
+.logo-bienvenida {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: aparecerLogo 1.5s ease 1.8s forwards;
+    text-align: center;
+    padding: 0 1rem;
+}
+
+.titulo-magico {
+    color: var(--color-dorado-estrella);
+    font-size: 3rem;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    margin-bottom: 0.8rem;
+}
+
+.subtitulo-magico {
+    color: var(--color-texto-suave);
+    font-size: 1.3rem;
+}
+
+@keyframes aparecerLogo {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ==============================================================================
+   3. FONDO GLOBAL FIJO DE ESTRELLAS ANIMADAS
+   ============================================================================== */
+#fondo-estrellas-fijo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Cada estrella creada dinámicamente mediante JavaScript */
+.estrella-brillante {
+    position: absolute;
+    background-color: #ffffff;
+    border-radius: 50%;
+    animation: tintinear var(--duracion, 2s) infinite ease-in-out alternate;
+}
+
+/* Efecto de parpadeo suave con variación de escala y brillo */
+@keyframes tintinear {
+    0% {
+        opacity: 0.2;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.3);
+        box-shadow: 0 0 8px #ffffff;
+    }
+}
+
+
+/* ==============================================================================
+   4. BARRA DE NAVEGACIÓN Y ENLACES (HEADER Y NAV)
+   ============================================================================== */
+.barra-navegacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(10, 11, 28, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+}
+
+.logotipo-web {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: var(--color-dorado-estrella);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    user-select: none;
+}
+
+.icono-logo-estrella {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px #ffd700);
+    transition: transform 0.3s ease;
+}
+
+.logotipo-web:hover .icono-logo-estrella {
+    transform: rotate(15deg) scale(1.1);
+}
+
+.menu-enlaces {
+    display: flex;
+    align-items: center;
+}
+
+.menu-enlaces a {
+    color: var(--color-texto-blanco);
+    text-decoration: none;
+    margin-right: 1.5rem;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.menu-enlaces a:hover {
+    color: var(--color-dorado-estrella);
+}
+
+.saludo-usuario {
+    color: var(--color-dorado-estrella);
+    font-weight: bold;
+    margin-right: 1.5rem;
+}
+
+.boton-plan-link {
+    background: transparent;
+    border: none;
+    color: var(--color-rosa-infantil);
+    font-weight: bold;
+    margin-right: 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.boton-principal {
+    background: linear-gradient(135deg, #8a2be2, #ff76ac);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.4rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(255, 118, 172, 0.3);
+    transition: transform 0.2s;
+}
+
+.boton-principal:hover {
+    transform: scale(1.05);
+}
+
+.boton-secundario {
+    background: transparent;
+    color: var(--color-dorado-estrella);
+    border: 1px solid var(--color-dorado-estrella);
+    padding: 0.5rem 1.2rem;
+    border-radius: 25px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.boton-secundario:hover {
+    background: rgba(255, 215, 0, 0.15);
+}
+
+
+/* ==============================================================================
+   5. CONTENEDORES, SECCIONES Y EFECTO CRISTAL (GLASSMORPHISM)
+   ============================================================================== */
+.seccion-hero {
+    padding: 4rem 2rem;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.seccion-bloque {
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.titulo-seccion {
+    font-size: 2rem;
+    color: var(--color-azul-brillante);
+    margin-bottom: 2.5rem;
+}
+
+.contenedor-pasos, 
+.contenedor-ejemplos {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+/* Efecto cristal con desenfoque de fondo aplicado a las tarjetas del proyecto */
+.paso-card, 
+.tarjeta-cuento-ejemplo, 
+.tarjeta-plan-mini,
+.tarjeta-magica-hero {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border-radius: 25px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                border-color 0.4s, 
+                box-shadow 0.4s;
+}
+
+.tarjeta-magica-hero {
+    padding: 3rem 2rem;
+    max-width: 800px;
+    width: 100%;
+}
+
+.paso-card, 
+.tarjeta-cuento-ejemplo {
+    padding: 2rem;
+    width: 280px;
+    text-align: center;
+}
+
+/* Destello diagonal suave en hover (de esquina superior izquierda a inferior derecha) */
+.paso-card::before, 
+.tarjeta-cuento-ejemplo::before, 
+.tarjeta-plan-mini::before,
+.tarjeta-magica-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -150%;
+    width: 100%;
+    height: 200%;
+    background: linear-gradient(
+        45deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.0) 30%, 
+        rgba(255, 255, 255, 0.35) 50%, 
+        rgba(255, 255, 255, 0.0) 70%, 
+        transparent 100%
+    );
+    transform: rotate(25deg);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.paso-card:hover::before, 
+.tarjeta-cuento-ejemplo:hover::before, 
+.tarjeta-plan-mini:hover::before,
+.tarjeta-magica-hero:hover::before {
+    opacity: 1;
+    left: 150%;
+    transition: left 1.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+.paso-card:hover, 
+.tarjeta-cuento-ejemplo:hover, 
+.tarjeta-plan-mini:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(255, 215, 0, 0.6) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.2);
+}
+
+/* Ilustraciones infantiles dentro de las tarjetas */
+.contenedor-imagen-paso {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 1.2rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.imagen-paso-infantil {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.paso-card:hover .imagen-paso-infantil {
+    transform: scale(1.15) rotate(5deg);
+}
+
+.boton-gigante-magico {
+    background: linear-gradient(135deg, #ffd700, #ff9900);
+    color: #000000;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+    transition: transform 0.2s;
+    margin-top: 1.5rem;
+}
+
+.boton-gigante-magico:hover {
+    transform: scale(1.08);
+}
+
+
+/* ==============================================================================
+   6. FORMULARIO CREADOR DE CUENTOS (ZONA PRIVADA)
+   ============================================================================== */
+.formulario-creador {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+    text-align: left;
+}
+
+.grupo-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.grupo-campo label {
+    color: var(--color-dorado-estrella);
+    font-weight: bold;
+}
+
+.grupo-campo input, 
+.grupo-campo select {
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: 1px solid #3d416e;
+    background: #0a0b1c;
+    color: white;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.grupo-campo input:focus, 
+.grupo-campo select:focus {
+    outline: none;
+    border-color: var(--color-dorado-estrella);
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+}
+
+/* Fila de píldoras de cristal para personajes rápidos */
+.selector-personajes-rapidos {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.4rem;
+}
+
+.btn-personaje {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    color: var(--color-texto-blanco);
+    font-size: 0.95rem;
+    font-family: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn-personaje:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 215, 0, 0.55);
+    color: var(--color-dorado-estrella);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2), 0 0 12px rgba(168, 85, 247, 0.25);
+}
+
+.btn-personaje.activo {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.22), rgba(168, 85, 247, 0.35));
+    border-color: var(--color-dorado-estrella);
+    color: #ffffff;
+    font-weight: 600;
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.45), 0 0 20px rgba(168, 85, 247, 0.35);
+}
+
+
+/* ==============================================================================
+   7. TARJETAS DE PLANES Y TARIFAS
+   ============================================================================== */
+.contenedor-tarjetas-modal {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.tarjeta-plan-mini {
+    width: 220px;
+    padding: 2rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(145deg, rgba(30, 33, 66, 0.6), rgba(15, 16, 38, 0.8)) !important;
+}
+
+.tarjeta-plan-mini.destacada {
+    border: 2px solid var(--color-dorado-estrella) !important;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+}
+
+.tarjeta-plan-mini h4 {
+    font-size: 1.3rem;
+    color: var(--color-dorado-estrella);
+    margin-bottom: 0.5rem;
+}
+
+.tarjeta-plan-mini .precio {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin: 0.8rem 0;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+
+/* ==============================================================================
+   8. VENTANAS MODALES EMERGENTES (LOGIN, REGISTRO Y PLANES)
+   ============================================================================== */
+.modal-fondo {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(5, 6, 15, 0.85);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido-magico {
+    background: #151733;
+    padding: 2.5rem;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 420px;
+    position: relative;
+    border: 2px solid var(--color-dorado-estrella);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+}
+
+.modal-contenido-magico.ancho-grande {
+    max-width: 750px;
+}
+
+.boton-cerrar {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--color-texto-suave);
+}
+
+.modal-contenido-magico form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.2rem;
+    text-align: left;
+}
+
+.modal-contenido-magico input {
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: 1px solid #3d416e;
+    background: #0a0b1c;
+    color: white;
+}
+
+.ancho-completo {
+    width: 100%;
+}
+
+.separador-o {
+    text-align: center;
+    margin: 1.2rem 0 0.8rem 0;
+    color: var(--color-texto-suave);
+    font-size: 0.9rem;
+}
+
+.boton-google {
+    width: 100%;
+    padding: 0.7rem;
+    background: #ffffff;
+    color: #333333;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.boton-google:hover {
+    background: #f1f1f1;
+}
+
+.icono-google-btn {
+    width: 20px;
+    height: 20px;
+}

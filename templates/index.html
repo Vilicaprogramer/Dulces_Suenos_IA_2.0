@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dulces Sueños AI - Cuentos Mágicos Infantiles</title>
+
+    <!-- Hoja de estilos externa para mantener separado el diseño del contenido -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<body>
+
+    <!-- Contenedor fijo de estrellas generadas dinámicamente con JavaScript -->
+    <div id="fondo-estrellas-fijo"></div>
+
+    <!-- ====================================================================== -->
+    <!-- 1. PANTALLA DE CARGA Y BIENVENIDA (SPLASH SCREEN INICIAL)              -->
+    <!-- Este bloque muestra una animación visual al cargar la página           -->
+    <!-- ====================================================================== -->
+    <div id="pantalla-bienvenida">
+        <!-- Imagen animada de la estrella en 3D -->
+        <img src="/static/img/estrella.png" alt="Estrella Mágica" class="estrella-mario">
+
+        <!-- Contenedor del título principal que aparece tras el vuelo de la estrella -->
+        <div class="logo-bienvenida">
+            <h1 class="titulo-magico">✨ Dulces Sueños AI ✨</h1>
+            <p class="subtitulo-magico">Donde las estrellas te cuentan historias para dormir...</p>
+        </div>
+    </div>
+
+    <!-- ====================================================================== -->
+    <!-- 2. CABECERA PRINCIPAL Y BARRA DE NAVEGACIÓN (HEADER Y NAV)            -->
+    <!-- Se adapta según si el usuario está autenticado o es un visitante       -->
+    <!-- ====================================================================== -->
+    <header class="barra-navegacion">
+        <!-- Logotipo con imagen de la estrella y nombre del proyecto -->
+        <div class="logotipo-web">
+            <img src="/static/img/estrella.png" alt="Logo Estrella" class="icono-logo-estrella">
+            Dulces Sueños AI
+        </div>
+
+        <nav class="menu-enlaces">
+            <!-- Condicional Jinja2: Comprobamos si el usuario ha iniciado sesión -->
+            {% if current_user.is_authenticated %}
+            <!-- Si tiene sesión iniciada, mostramos un saludo y el botón para cerrar sesión -->
+            <span class="saludo-usuario">Hola, {{ current_user.nombre_completo or current_user.correo_electronico
+                }}</span>
+            <a href="/logout" class="boton-secundario">Cerrar Sesión</a>
+            {% else %}
+            <!-- Si es visitante, mostramos los enlaces de anclaje y botones de acceso -->
+            <a href="#inicio">Inicio</a>
+            <a href="#como-funciona">¿Cómo funciona?</a>
+            <a href="#ejemplos">Cuentos Mágicos</a>
+            <button type="button" class="boton-plan-link" onclick="abrir_ventana_modal('modal-planes')">Ver
+                Suscripciones</button>
+            <button type="button" class="boton-principal" onclick="abrir_ventana_modal('modal-login')">Iniciar
+                Sesión</button>
+            <button type="button" class="boton-secundario"
+                onclick="abrir_ventana_modal('modal-registro')">Registrarse</button>
+            {% endif %}
+        </nav>
+    </header>
+
+    <!-- ====================================================================== -->
+    <!-- 3. CONTENIDO PRINCIPAL DE LA PÁGINA (MAIN)                             -->
+    <!-- ====================================================================== -->
+    <main>
+        {% if current_user.is_authenticated %}
+        <!-- ================================================================== -->
+        <!-- ZONA PRIVADA: PANEL DE CREACIÓN DE CUENTOS CON IA                  -->
+        <!-- Solo se muestra a los usuarios con sesión activa                   -->
+        <!-- ================================================================== -->
+        <section id="creador-cuentos" class="seccion-hero">
+            <div class="tarjeta-magica-hero">
+                <h2>Panel de Creación de Cuentos Mágicos</h2>
+                <p>Bienvenido/a, <strong>{{ current_user.nombre_completo or current_user.correo_electronico }}</strong>.
+                    ¿Qué historia soñaremos hoy?</p>
+
+                <!-- Formulario asíncrono para enviar los parámetros del cuento -->
+                <form action="/generar-cuento" method="POST" class="formulario-creador">
+                    <!-- Campo 1: Temática del cuento -->
+                    <div class="grupo-campo">
+                        <label for="tema_cuento">¿De qué quieres que trate el cuento hoy?</label>
+                        <input type="text" id="tema_cuento" name="tema_cuento"
+                            placeholder="Ej: Un viaje a las estrellas, un dragón tímido...">
+                    </div>
+
+                    <!-- Campo 2: Personaje protagonista con píldoras de selección rápida -->
+                    <div class="grupo-campo">
+                        <label for="nombre_personaje">Elige un personaje o crea uno:</label>
+                        <div class="selector-personajes-rapidos">
+                            <button type="button" class="btn-personaje" data-personaje="Luna la conejita">🐰
+                                Luna</button>
+                            <button type="button" class="btn-personaje" data-personaje="Tito el dragón">🐉 Tito</button>
+                            <button type="button" class="btn-personaje" data-personaje="Pipo el astronauta">🚀
+                                Pipo</button>
+                            <button type="button" class="btn-personaje" data-personaje="Mila la sirena">🧜 Mila</button>
+                        </div>
+                        <input type="text" id="nombre_personaje" name="nombre_personaje"
+                            placeholder="O escribe un personaje personalizado...">
+                    </div>
+
+                    <!-- Campo 3: Tono o estilo de la narración -->
+                    <div class="grupo-campo">
+                        <label for="tono_cuento">Tono del cuento:</label>
+                        <select id="tono_cuento" name="tono_cuento">
+                            <option value="Dulce">Dulce</option>
+                            <option value="Gracioso">Gracioso</option>
+                            <option value="Aventurero">Aventurero</option>
+                            <option value="Sueño tranquilo">Sueño tranquilo</option>
+                        </select>
+                    </div>
+
+                    <!-- Botón para disparar la generación con IA -->
+                    <button type="submit" class="boton-gigante-magico">🪄 Generar Cuento</button>
+                </form>
+            </div>
+        </section>
+
+        {% else %}
+        <!-- ================================================================== -->
+        <!-- ZONA PÚBLICA: PRESENTACIÓN PARA VISITANTES NO REGISTRADOS          -->
+        <!-- ================================================================== -->
+        <section id="inicio" class="seccion-hero">
+            <div class="tarjeta-magica-hero">
+                <h2>Crea historias personalizadas para el momento de dormir 📖✨</h2>
+                <p>Convierte a tus hijos en los protagonistas de cuentos llenos de valores, magia y aventuras
+                    inolvidables antes de soñar.</p>
+                <div class="botones-accion">
+                    <button type="button" class="boton-gigante-magico"
+                        onclick="abrir_ventana_modal('modal-registro')">🌟 Crear mi Primer Cuento Gratis</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Explicativa: Cómo funciona la plataforma -->
+        <section id="como-funciona" class="seccion-bloque">
+            <h2 class="titulo-seccion">¿Cómo creamos la magia?</h2>
+            <div class="contenedor-pasos">
+
+                <div class="paso-card">
+                    <div class="contenedor-imagen-paso">
+                        <img src="/static/img/ilustraciones/mago.png" alt="Elige al Protagonista"
+                            class="imagen-paso-infantil">
+                    </div>
+                    <h3>1. Elige al Protagonista</h3>
+                    <p>Dinos el nombre del niño o niña, su edad y sus personajes favoritos.</p>
+                </div>
+
+                <div class="paso-card">
+                    <div class="contenedor-imagen-paso">
+                        <img src="/static/img/ilustraciones/libro_magico.png" alt="Escoge la Lección"
+                            class="imagen-paso-infantil">
+                    </div>
+                    <h3>2. Escoge la Lección</h3>
+                    <p>Selecciona un valor como la empatía, el orden, el valor o la amistad.</p>
+                </div>
+
+                <div class="paso-card">
+                    <div class="contenedor-imagen-paso">
+                        <img src="/static/img/ilustraciones/varita.png" alt="IA en Acción" class="imagen-paso-infantil">
+                    </div>
+                    <h3>3. ¡IA en Acción!</h3>
+                    <p>Nuestra Inteligencia Artificial genera un cuento único listo para leer.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Sección de Ejemplos de Cuentos generados -->
+        <section id="ejemplos" class="seccion-bloque">
+            <h2 class="titulo-seccion">Ejemplos de Cuentos Creados</h2>
+            <div class="contenedor-ejemplos">
+                <div class="tarjeta-cuento-ejemplo">
+                    <span class="categoria-cuento">Aventura</span>
+                    <h3>El Oso que Buscaba la Luna 🐻‍❄️</h3>
+                    <p>"Había una vez en el bosque nevado un osito llamado Barnaby que quería darle un abrazo a la
+                        luna..."</p>
+                    <button type="button" class="boton-leer-ejemplo"
+                        onclick="alert('Inicia sesión para leer cuentos completos')">Leer Fragmento</button>
+                </div>
+                <div class="tarjeta-cuento-ejemplo">
+                    <span class="categoria-cuento">Fantasía</span>
+                    <h3>Lucas y el Dragón Vegetariano 🐲</h3>
+                    <p>"En el reino de las nubes, un pequeño dragón llamado Draco prefería comer brócoli en vez de
+                        fuego..."</p>
+                    <button type="button" class="boton-leer-ejemplo"
+                        onclick="alert('Inicia sesión para leer cuentos completos')">Leer Fragmento</button>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+
+    <!-- ====================================================================== -->
+    <!-- 4. VENTANAS MODALES EMERGENTES (ACCESIBILIDAD Y DIÁLOGOS)              -->
+    <!-- ====================================================================== -->
+
+    <!-- Modal para Inicio de Sesión (Login) -->
+    <div id="modal-login" class="modal-fondo">
+        <div class="modal-contenido-magico">
+            <span class="boton-cerrar" onclick="cerrar_ventana_modal('modal-login')">&times;</span>
+            <h3>✨ Iniciar Sesión</h3>
+            <form action="/login" method="POST">
+                <label for="correo_login">Correo Electrónico:</label>
+                <input type="email" id="correo_login" name="correo_login" required placeholder="padres@correo.com">
+
+                <label for="clave_login">Contraseña:</label>
+                <input type="password" id="clave_login" name="clave_login" required placeholder="Tu contraseña">
+
+                <button type="submit" class="boton-principal ancho-completo">Entrar al Mundo Mágico</button>
+            </form>
+
+            <div class="separador-o"><span>o también</span></div>
+            <button type="button" class="boton-google"
+                onclick="alert('Redirigiendo a autenticación segura de Google OAuth 2.0...')">
+                <img src="/static/img/ilustraciones/logo_google.png" alt="Google" class="icono-google-btn">
+                Continuar con Google
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para Registro de Nuevos Usuarios -->
+    <div id="modal-registro" class="modal-fondo">
+        <div class="modal-contenido-magico">
+            <span class="boton-cerrar" onclick="cerrar_ventana_modal('modal-registro')">&times;</span>
+            <h3>🌟 Crear Cuenta Gratis</h3>
+            <form action="/registro" method="POST">
+                <label for="nombre_usuario">Tu Nombre:</label>
+                <input type="text" id="nombre_usuario" name="nombre_usuario" required placeholder="Ej. Mamá de Sofía">
+
+                <label for="correo_usuario">Correo Electrónico:</label>
+                <input type="email" id="correo_usuario" name="correo_usuario" required placeholder="padres@correo.com">
+
+                <label for="clave_usuario">Contraseña:</label>
+                <input type="password" id="clave_usuario" name="clave_usuario" required
+                    placeholder="Crea tu contraseña">
+
+                <button type="submit" class="boton-principal ancho-completo">Registrarse Gratis</button>
+            </form>
+
+            <div class="separador-o"><span>o también</span></div>
+            <button type="button" class="boton-google"
+                onclick="alert('Redirigiendo a autenticación segura de Google OAuth 2.0...')">
+                <img src="/static/img/ilustraciones/logo_google.png" alt="Google" class="icono-google-btn">
+                Registrarse con Google
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Informativo de Tarifas y Suscripciones -->
+    <div id="modal-planes" class="modal-fondo">
+        <div class="modal-contenido-magico ancho-grande">
+            <span class="boton-cerrar" onclick="cerrar_ventana_modal('modal-planes')">&times;</span>
+            <h3>✨ Planes y Suscripciones</h3>
+            <div class="contenedor-tarjetas-modal">
+                <div class="tarjeta-plan-mini">
+                    <h4>Peques (Free)</h4>
+                    <p class="precio">0€ / mes</p>
+                    <p>5 Cuentos al mes</p>
+                </div>
+                <div class="tarjeta-plan-mini destacada">
+                    <h4>Soñador (Premium)</h4>
+                    <p class="precio">4.99€ / mes</p>
+                    <p>20 Cuentos al mes + PDF</p>
+                </div>
+                <div class="tarjeta-plan-mini">
+                    <h4>Estrella (Ilimitado)</h4>
+                    <p class="precio">9.99€ / mes</p>
+                    <p>Cuentos Ilimitados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================================== -->
+    <!-- 5. ARCHIVOS JAVASCRIPT EXTERNOS                                        -->
+    <!-- ====================================================================== -->
+    <script src="/static/js/main.js"></script>
+</body>
+
+</html>
