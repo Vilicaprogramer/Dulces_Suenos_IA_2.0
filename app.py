@@ -230,23 +230,49 @@ def generar_cuento():
             }), 403
 
     # 3. Construimos el texto del Prompt que le enviaremos al modelo de lenguaje
-    prompt_para_gemini = f"""
-    Eres un generador de cuentos completamente seguro y apropiado para niños en castellano. 
-    Tu misión es crear historias únicas, enriquecedoras y entretenidas para niños de 4 a 10 años, 
-    que se lean en aproximadamente 4 minutos.
+    frase_rechazo_seguridad = "Lo siento, ese tema no es apropiado para un cuento de Dulces Sueños. ¿Por qué no probamos con una historia de magia o animales?"
 
-    REGLAS ESTRICTAS:
-    - Cero violencia, sexualidad, drogas, lenguaje ofensivo o miedos extremos.
-    - Si el tema pedido es inapropiado, responde exactamente con: "Este no es un tema apropiado para niños, por favor elige otro."
-    
+    prompt_texto = f"""
+    Eres un escritor experto en literatura infantil y cuentacuentos profesional en castellano para la plataforma Dulces Sueños AI.
+    Tu misión es redactar una historia maravillosa, cálida, enriquecedora y educativa, ideal para leer antes de dormir a niños de entre 4 y 10 años.
+
+    ================================================================================
+    REGLA INQUEBRANTABLE DE SEGURIDAD INFANTIL Y PROTOCOLO DE RECHAZO (CRÍTICO):
+    ================================================================================
+    Queda TERMINANTEMENTE PROHIBIDO incluir cualquier mención, alusión directa o indirecta, metáfora o insinuación sobre:
+    - Sexualidad, erotismo o contenido para adultos.
+    - Drogas, estupefacientes, tabaco, alcohol o sustancias ilícitas.
+    - Muerte, suicidio, duelo traumático o autolesiones.
+    - Violencia física o verbal, agresión, sangre, peleas o armas de cualquier tipo.
+    - Acoso, intimidación, crueldad o comportamientos destructivos.
+    - Terror, monstruos aterradores, pesadillas, gore o situaciones de pánico o miedo extremo.
+
+    Si el tema solicitado ("{tema_solicitado}") o el nombre del personaje ("{personaje_solicitado}") contiene o insinúa CUALQUIERA de estos temas prohibidos, NO ESCRIBAS NINGÚN CUENTO, NO PIDAS DISCULPAS ADICIONALES Y NO AGREGUES TÍTULO NI EXPLICACIONES. Responde ÚNICA Y EXCLUSIVAMENTE con esta frase exacta:
+    "{frase_rechazo_seguridad}"
+
+    ================================================================================
+    DIRECTRICES DE LONGITUD Y ESTRUCTURA (CUENTO LARGO Y DETALLADO):
+    ================================================================================
+    Si los parámetros son completamente seguros, debes generar un cuento extenso, inmersivo y pausado:
+    1. TIEMPO DE LECTURA: Diseñado para una lectura en voz alta pausada de 8 a 10 minutos.
+    2. EXTENSIÓN: Debe tener OBLIGATORIAMAMENTE entre 8 y 10 párrafos amplios y muy desarrollados.
+    3. DETALLE Y RIQUEZA DESCRIPTIVA: No hagas resúmenes rápidos ni historias cortas. Describe con detalle inmersivo los entornos (colores, aromas, sonidos nocturnos, la luz de las estrellas), las emociones de los personajes, sus reflexiones y su interacción con el entorno.
+    4. DIÁLOGOS VIVOS: Incluye diálogos tiernos y entretenidos entre los personajes que aporten dinamismo y aprendizaje a la narración.
+    5. FINAL RELAJANTE: Concluye la historia de forma dulce, sosegada y reconfortante, invitando suavemente al niño al descanso y al sueño reparador.
+
+    ================================================================================
     PARÁMETROS DEL CUENTO:
+    ================================================================================
     - Protagonista: {personaje_solicitado}
     - Tema central: {tema_solicitado}
     - Tono o estilo: {tono_solicitado}
-    
-    FORMATO DE RESPUESTA REQUERIDO:
-    - La primera línea debe ser obligatoriamente el título con el formato: "Título: [Nombre del cuento]".
-    - El resto debe ser el cuento separado claramente en 4 o 5 párrafos.
+
+    ================================================================================
+    FORMATO ESTRICTO DE RESPUESTA:
+    ================================================================================
+    - Línea 1 (obligatoria): Debe comenzar exactamente con "Título: [Nombre creativo y mágico del cuento]".
+    - Salto de línea.
+    - A partir de la línea 2: El cuerpo del cuento estructurado en al menos 8 a 10 párrafos claramente separados entre sí.
     """
 
     # 4. Preparamos los datos y la URL para la petición HTTP POST a la API REST de Gemini
@@ -255,7 +281,7 @@ def generar_cuento():
         "contents": [
             {
                 "parts": [
-                    {"text": prompt_para_gemini}
+                    {"text": prompt_texto}
                 ]
             }
         ]
@@ -269,7 +295,7 @@ def generar_cuento():
             print("ADVERTENCIA: No se encontró la variable GEMINI_API_KEY en el entorno.")
         
         # Realizamos la petición HTTP a los servidores de Google
-        respuesta_servidor = requests.post(url_api_gemini, json=cuerpo_peticion_api, timeout=15)
+        respuesta_servidor = requests.post(url_api_gemini, json=cuerpo_peticion_api, timeout=60)
         datos_json_respuesta = respuesta_servidor.json()
         
         # Verificamos si Google respondió con un código de error
@@ -281,10 +307,10 @@ def generar_cuento():
             }), 500
 
         # Extraemos el texto generado por el modelo
-        texto_generado_por_ia = datos_json_respuesta['candidates'][0]['content']['parts'][0]['text']
+        texto_generado_por_ia = datos_json_respuesta['candidates'][0]['content']['parts'][0]['text'].strip()
 
-        # Si el modelo determinó que el tema no era seguro para niños
-        if "Este no es un tema apropiado" in texto_generado_por_ia:
+        # Comprobamos si la IA activó el protocolo de rechazo por seguridad infantil
+        if "no es apropiado para un cuento de Dulces Sueños" in texto_generado_por_ia or "Lo siento, ese tema no es apropiado" in texto_generado_por_ia:
             return jsonify({
                 "status": "error", 
                 "message": texto_generado_por_ia

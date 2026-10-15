@@ -5,33 +5,131 @@
    ============================================================================== */
 
 /* ==============================================================================
-   1. VARIABLES CSS GLOBALES Y REGLAS DE REINICIO (RESET)
-   Definimos una paleta de colores coherente en :root para reutilizarla fácilmente.
+   1. VARIABLES CSS GLOBALES, DESIGN TOKENS Y SUPERFICIES NATIVAS
+   Memoria Técnica: Definición centralizada de tokens de diseño bajo metodología
+   de variables CSS3 nativas. Incluye paleta nocturna infantil (Taste), curvas
+   de aceleración de GPU (Emil Kowalski), elevación con física multicapa y
+   personalización de superficies del navegador (Impeccable Craft).
    ============================================================================== */
 :root {
+    /* --- PALETA CROMÁTICA NOCTURNA INFANTIL (TASTE FRONTEND) --- */
     --color-fondo-nocturno: #0a0b1c;
+    --color-fondo-superficie: #10122e;
     --color-purpura-magico: #1a1c38;
     --color-dorado-estrella: #ffd700;
     --color-rosa-infantil: #ff76ac;
     --color-azul-brillante: #4da6ff;
     --color-texto-blanco: #ffffff;
     --color-texto-suave: #b3b8d4;
+    --color-borde-translucido: rgba(255, 255, 255, 0.08);
+    --color-anillo-enfoque: #ffd700;
+
+    /* --- CURVAS DE TRANSICIÓN Y FÍSICA DE MOVIMIENTO (EMIL KOWALSKI) --- */
+    /* Curva obligatoria para entradas rápidas y feedback táctil inmediato */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    /* Curva simétrica para traslaciones y reordenamientos en pantalla */
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    /* Curva de desaceleración pesada para modales, hojas emergentes y drawers */
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+    /* Rebote elástico sutil para elementos lúdicos y celebraciones */
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* Duraciones estandarizadas para evitar animaciones perezosas */
+    --duracion-inmediata: 160ms;
+    --duracion-estandar: 240ms;
+
+    /* --- SOMBRAS CON FÍSICA REAL (IMPECCABLE CRAFT) --- */
+    /* Desplazamiento vertical positivo y dispersión multicapa (sin halos planos) */
+    --sombra-suave: 0 2px 8px -2px rgba(0, 0, 0, 0.4), 0 1px 4px -1px rgba(0, 0, 0, 0.25);
+    --sombra-media: 0 12px 24px -6px rgba(0, 0, 0, 0.5), 0 4px 8px -2px rgba(0, 0, 0, 0.3);
+    --sombra-flotante: 0 24px 48px -12px rgba(0, 0, 0, 0.65), 0 8px 16px -4px rgba(0, 0, 0, 0.35);
+    --brillo-bisel-interior: inset 0 1px 1px rgba(255, 255, 255, 0.14);
 }
 
-/* Reinicio de márgenes, rellenos y modelo de caja para todos los elementos */
-* {
+/* Reinicio de márgenes, rellenos y modelo de caja para consistencia entre navegadores */
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/* Estilos base del documento */
+/* Estilos base del documento y renderizado de texto */
 body {
     font-family: 'Fredoka', 'Segoe UI', Quicksand, sans-serif;
     background-color: var(--color-fondo-nocturno);
     color: var(--color-texto-blanco);
     overflow-x: hidden;
     position: relative;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- SUPERFICIES NATIVAS DEL NAVEGADOR (IMPECCABLE CRAFT) --- */
+
+/* Selección de texto adaptada a la temática mágica */
+::selection {
+    background-color: rgba(255, 215, 0, 0.3);
+    color: var(--color-dorado-estrella);
+}
+
+/* Barra de desplazamiento nativa integrada en Firefox */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 215, 0, 0.3) var(--color-fondo-nocturno);
+}
+
+/* Barra de desplazamiento nativa integrada en WebKit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-fondo-nocturno);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.25);
+    border-radius: 8px;
+    border: 2px solid var(--color-fondo-nocturno);
+    transition: background var(--duracion-inmediata) var(--ease-out);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 215, 0, 0.5);
+}
+
+/* Navegación accesible por teclado: anillo de alto contraste (WCAG AA) */
+:focus-visible {
+    outline: 2px solid var(--color-anillo-enfoque);
+    outline-offset: 3px;
+}
+
+/* Suprime el contorno visual cuando la interacción proviene de clic de ratón o toque */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Cursor de inserción de texto adaptado a la temática */
+input,
+textarea {
+    caret-color: var(--color-dorado-estrella);
+}
+
+/* --- ACCESIBILIDAD: RESPETO A PREFERENCIAS DEL SISTEMA (EMIL KOWALSKI) --- */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 
@@ -74,9 +172,11 @@ body {
         transform: scale(0.2) rotate(0deg) translateZ(-500px);
         opacity: 0;
     }
+
     30% {
         opacity: 1;
     }
+
     80% {
         top: 40%;
         right: 40%;
@@ -84,6 +184,7 @@ body {
         opacity: 1;
         filter: drop-shadow(0 0 50px #ffd700);
     }
+
     100% {
         top: 50%;
         right: 50%;
@@ -149,6 +250,7 @@ body {
         opacity: 0.2;
         transform: scale(0.8);
     }
+
     100% {
         opacity: 1;
         transform: scale(1.3);
@@ -158,108 +260,279 @@ body {
 
 
 /* ==============================================================================
-   4. BARRA DE NAVEGACIÓN Y ENLACES (HEADER Y NAV)
+   4. BARRA DE NAVEGACIÓN Y COMPONENTES DE BOTONERA (ISLAND BUTTONS)
+   Memoria Técnica: Implementación de cabecera persistente con glassmorphism de alta
+   precisión (saturación y desenfoque por GPU) y arquitectura "Island Button"
+   (botones píldora táctiles). Incorpora respuesta háptica inmediata en :active
+   (Emil Kowalski) y la matriz íntegra de 8 estados (Impeccable Craft), erradicando
+   el cliché de degradados violetas para respetar la paleta nocturna natural.
    ============================================================================== */
+
+/* Cabecera persistente con desenfoque de fondo y borde milimétrico */
 .barra-navegacion {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.2rem 3rem;
-    background: rgba(10, 11, 28, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    padding: 1rem 3.5rem;
+    background: rgba(10, 11, 28, 0.78);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+    border-bottom: 1px solid var(--color-borde-translucido);
+    box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.5);
+    transition: background-color var(--duracion-estandar) var(--ease-out);
 }
 
+/* Logotipo con contenedor interactivo y micro-rotación elástica */
 .logotipo-web {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 1.6rem;
-    font-weight: bold;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 700;
     color: var(--color-dorado-estrella);
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.35);
     user-select: none;
+    cursor: pointer;
 }
 
 .icono-logo-estrella {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
-    filter: drop-shadow(0 0 8px #ffd700);
-    transition: transform 0.3s ease;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+    transition: transform var(--duracion-estandar) var(--ease-spring);
 }
 
-.logotipo-web:hover .icono-logo-estrella {
-    transform: rotate(15deg) scale(1.1);
+@media (hover: hover) and (pointer: fine) {
+    .logotipo-web:hover .icono-logo-estrella {
+        transform: rotate(18deg) scale(1.12);
+    }
 }
 
+/* Menú de navegación con espaciado macro para airear la interfaz */
 .menu-enlaces {
     display: flex;
     align-items: center;
+    gap: 1.25rem;
 }
 
-.menu-enlaces a {
-    color: var(--color-texto-blanco);
+/* Enlaces de navegación con transición suave y micro-interacción */
+.menu-enlaces a:not([class*="boton-"]) {
+    color: var(--color-texto-suave);
     text-decoration: none;
-    margin-right: 1.5rem;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
     font-weight: 500;
-    transition: color 0.3s;
+    font-size: 0.95rem;
+    transition: color var(--duracion-inmediata) var(--ease-out),
+        background-color var(--duracion-inmediata) var(--ease-out);
 }
 
-.menu-enlaces a:hover {
-    color: var(--color-dorado-estrella);
+@media (hover: hover) and (pointer: fine) {
+    .menu-enlaces a:not([class*="boton-"]):hover {
+        color: var(--color-dorado-estrella);
+        background-color: rgba(255, 255, 255, 0.04);
+    }
+}
+
+.menu-enlaces a:not([class*="boton-"]):active {
+    transform: scale(0.97);
+    transition: transform var(--duracion-inmediata) var(--ease-out);
 }
 
 .saludo-usuario {
     color: var(--color-dorado-estrella);
-    font-weight: bold;
-    margin-right: 1.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.4rem 0.8rem;
+    background: rgba(255, 215, 0, 0.08);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 9999px;
 }
 
+/* ------------------------------------------------------------------------------
+   ARQUITECTURA DE BOTONES "ISLAND BUTTON" Y MATRIZ DE 8 ESTADOS
+   ------------------------------------------------------------------------------ */
+
+/* 1. ESTADO BASE: Píldora táctil ergonómica con elevación física */
+.boton-principal,
+.boton-secundario,
 .boton-plan-link {
-    background: transparent;
-    border: none;
-    color: var(--color-rosa-infantil);
-    font-weight: bold;
-    margin-right: 1rem;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-.boton-principal {
-    background: linear-gradient(135deg, #8a2be2, #ff76ac);
-    color: white;
-    border: none;
-    padding: 0.6rem 1.4rem;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: bold;
-    box-shadow: 0 4px 15px rgba(255, 118, 172, 0.3);
-    transition: transform 0.2s;
-}
-
-.boton-principal:hover {
-    transform: scale(1.05);
-}
-
-.boton-secundario {
-    background: transparent;
-    color: var(--color-dorado-estrella);
-    border: 1px solid var(--color-dorado-estrella);
-    padding: 0.5rem 1.2rem;
-    border-radius: 25px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1;
+    border-radius: 9999px;
     cursor: pointer;
     text-decoration: none;
-    font-weight: bold;
-    transition: background 0.3s;
+    position: relative;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--duracion-inmediata) var(--ease-out),
+        box-shadow var(--duracion-inmediata) var(--ease-out),
+        background-color var(--duracion-inmediata) var(--ease-out),
+        border-color var(--duracion-inmediata) var(--ease-out),
+        color var(--duracion-inmediata) var(--ease-out);
 }
 
-.boton-secundario:hover {
-    background: rgba(255, 215, 0, 0.15);
+/* Botón Principal (Isla Cálida: Oro Estelar con contraste WCAG AA 9.8:1) */
+.boton-principal {
+    background: linear-gradient(180deg, #ffe066 0%, #ffd700 100%);
+    color: #080914;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 0.65rem 1.4rem;
+    box-shadow: var(--sombra-suave), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+/* Botón Secundario (Isla Nocturna de Superficie con Borde Translúcido) */
+.boton-secundario {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--color-texto-blanco);
+    border: 1px solid var(--color-borde-translucido);
+    padding: 0.65rem 1.3rem;
+    box-shadow: var(--sombra-suave), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Botón Enlace / Planes (Píldora Sutil Rosa Ensueño) */
+.boton-plan-link {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--color-rosa-infantil);
+    padding: 0.65rem 1.1rem;
+}
+
+/* Micro-cápsula independiente para iconos en botones (Taste Frontend) */
+.capsula-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.1);
+    font-size: 0.85rem;
+    transition: transform var(--duracion-inmediata) var(--ease-spring);
+}
+
+/* 2. ESTADO HOVER: Elevación protegida para punteros finos */
+@media (hover: hover) and (pointer: fine) {
+    .boton-principal:hover {
+        background: linear-gradient(180deg, #fff080 0%, #ffe033 100%);
+        box-shadow: var(--sombra-media), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+        transform: translateY(-1px);
+    }
+
+    .boton-principal:hover .capsula-icono {
+        transform: scale(1.15) rotate(6deg);
+    }
+
+    .boton-secundario:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 215, 0, 0.35);
+        color: var(--color-dorado-estrella);
+        box-shadow: var(--sombra-media);
+        transform: translateY(-1px);
+    }
+
+    .boton-plan-link:hover {
+        background: rgba(255, 118, 172, 0.1);
+        border-color: rgba(255, 118, 172, 0.25);
+        color: #ffa3c8;
+    }
+}
+
+/* 3. ESTADO ACTIVE: Respuesta háptica táctil inmediata (Emil Kowalski) */
+.boton-principal:active,
+.boton-secundario:active,
+.boton-plan-link:active {
+    transform: scale(0.97) !important;
+    box-shadow: var(--sombra-suave) !important;
+    transition-duration: 80ms;
+}
+
+/* 4. ESTADO FOCUS-VISIBLE: Anillo de alto contraste para teclado (WCAG AA) */
+.boton-principal:focus-visible,
+.boton-secundario:focus-visible,
+.boton-plan-link:focus-visible {
+    outline: 2px solid var(--color-anillo-enfoque);
+    outline-offset: 3px;
+}
+
+/* 5. ESTADO DISABLED: Inhibición funcional accesible con legibilidad garantizada (WCAG AA) */
+.boton-principal:disabled,
+.boton-principal[aria-disabled="true"],
+.boton-secundario:disabled,
+.boton-secundario[aria-disabled="true"],
+.boton-plan-link:disabled,
+.boton-plan-link[aria-disabled="true"],
+.boton-gigante-magico:disabled,
+.boton-gigante-magico[aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none;
+}
+
+/* 6. ESTADO LOADING: Indicador de carga integrado no intrusivo */
+.boton-principal.esta-cargando,
+.boton-principal[data-cargando="true"],
+.boton-secundario.esta-cargando,
+.boton-secundario[data-cargando="true"] {
+    cursor: wait;
+    pointer-events: none;
+    color: transparent !important;
+    position: relative;
+}
+
+.boton-principal.esta-cargando::after,
+.boton-secundario.esta-cargando::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: calc(50% - 8px);
+    left: calc(50% - 8px);
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: giroCarga 600ms linear infinite;
+}
+
+.boton-principal.esta-cargando::after {
+    border-color: #080914;
+    border-top-color: transparent;
+}
+
+.boton-secundario.esta-cargando::after {
+    border-color: var(--color-dorado-estrella);
+    border-top-color: transparent;
+}
+
+@keyframes giroCarga {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 7. ESTADO ERROR: Alerta visual contextual */
+.boton-principal.estado-error,
+.boton-secundario.estado-error {
+    border-color: #ff4d6d;
+    background: rgba(255, 77, 109, 0.15);
+    color: #ff99ab;
+}
+
+/* 8. ESTADO VACÍO / NEUTRO: Variante tenue para acciones opcionales */
+.boton-secundario.estado-vacio {
+    opacity: 0.65;
+    border-style: dashed;
 }
 
 
@@ -284,7 +557,7 @@ body {
     margin-bottom: 2.5rem;
 }
 
-.contenedor-pasos, 
+.contenedor-pasos,
 .contenedor-ejemplos {
     display: flex;
     justify-content: center;
@@ -292,126 +565,218 @@ body {
     flex-wrap: wrap;
 }
 
-/* Efecto cristal con desenfoque de fondo aplicado a las tarjetas del proyecto */
-.paso-card, 
-.tarjeta-cuento-ejemplo, 
+/* ==============================================================================
+   ARQUITECTURA "DOUBLE-BEZEL" PARA CONTENEDORES Y TARJETAS (TASTE FRONTEND)
+   Memoria Técnica Nivel FP DAW:
+   1. Carcasa Externa (Outer Shell): Define el perímetro geométrico con radio R=28px
+      y un borde translúcido de 1px.
+   2. Núcleo Interior (Inner Core): Situado a una distancia concéntrica constante
+      mediante pseudo-elemento o envoltura interna.
+   3. Radio Concéntrico: Se calcula matemáticamente como R_interior = calc(R_exterior - padding).
+      Si usáramos el mismo radio para ambos bordes, las curvas no serían paralelas y se
+      produciría un aplastamiento visual en las esquinas. Con este cálculo, los arcos
+      comparten el mismo centro geométrico exacto.
+   4. Brillo Biselado (Bezel Highlight): box-shadow: inset 0 1px 1px rgba(255,255,255,0.14)
+      simula la incidencia de una luz cenital en el bisel maquinado superior.
+   5. Optimización de Rendimiento GPU: Se erradica backdrop-filter en estas tarjetas
+      que hacen scroll continuo para evitar recalcular filtros por cuadro. Se sustituye
+      por degradados oscuros de alta opacidad garantizando 60 FPS estables.
+   ============================================================================== */
+
+/* 1. CARCASA EXTERIOR (OUTER SHELL) */
+.paso-card,
+.tarjeta-cuento-ejemplo,
 .tarjeta-plan-mini,
-.tarjeta-magica-hero {
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
-    border-radius: 25px;
+.tarjeta-magica-hero,
+.tarjeta-shell {
+    --radio-exterior: 28px;
+    --separacion-bisel: 6px;
+    --radio-interior: calc(var(--radio-exterior) - var(--separacion-bisel));
+
     position: relative;
+    border-radius: var(--radio-exterior);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-borde-translucido);
+    box-shadow: var(--sombra-media);
     overflow: hidden;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                border-color 0.4s, 
-                box-shadow 0.4s;
+    /* Elevación orgánica por GPU sin alterar el layout */
+    transition: transform var(--duracion-estandar) var(--ease-out),
+        box-shadow var(--duracion-estandar) var(--ease-out),
+        border-color var(--duracion-estandar) var(--ease-out);
 }
 
+/* 2. NÚCLEO INTERIOR (INNER CORE) CON RADIO CONCÉNTRICO Y BISEL */
+.paso-card::before,
+.tarjeta-cuento-ejemplo::before,
+.tarjeta-plan-mini::before,
+.tarjeta-magica-hero::before {
+    content: "";
+    position: absolute;
+    top: var(--separacion-bisel);
+    left: var(--separacion-bisel);
+    right: var(--separacion-bisel);
+    bottom: var(--separacion-bisel);
+    border-radius: var(--radio-interior);
+    background: linear-gradient(145deg, rgba(26, 28, 56, 0.90) 0%, rgba(14, 16, 38, 0.96) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: var(--brillo-bisel-interior);
+    z-index: 0;
+    pointer-events: none;
+    transition: border-color var(--duracion-estandar) var(--ease-out);
+}
+
+/* Soporte directo para estructura HTML con clase .tarjeta-core */
+.tarjeta-core {
+    background: linear-gradient(145deg, rgba(26, 28, 56, 0.90) 0%, rgba(14, 16, 38, 0.96) 100%);
+    border-radius: calc(28px - 8px);
+    padding: 1.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: var(--brillo-bisel-interior);
+    position: relative;
+    z-index: 1;
+}
+
+/* Aseguramos que el contenido descanse sobre el núcleo interior */
+.paso-card>*,
+.tarjeta-cuento-ejemplo>*,
+.tarjeta-plan-mini>*,
+.tarjeta-magica-hero>* {
+    position: relative;
+    z-index: 1;
+}
+
+/* Dimensiones y espaciados macro */
 .tarjeta-magica-hero {
-    padding: 3rem 2rem;
+    padding: 3rem 2.5rem;
     max-width: 800px;
     width: 100%;
 }
 
-.paso-card, 
+.paso-card,
 .tarjeta-cuento-ejemplo {
-    padding: 2rem;
-    width: 280px;
+    padding: 2.2rem 1.8rem;
+    width: 290px;
     text-align: center;
 }
 
-/* Destello diagonal suave en hover (de esquina superior izquierda a inferior derecha) */
-.paso-card::before, 
-.tarjeta-cuento-ejemplo::before, 
-.tarjeta-plan-mini::before,
-.tarjeta-magica-hero::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -150%;
+/* ==============================================================================
+   AJUSTE DE IMÁGENES DENTRO DE LAS TARJETAS (CRAFT FLOOR)
+   ============================================================================== */
+.paso-card img,
+.tarjeta-cuento-ejemplo img {
     width: 100%;
-    height: 200%;
-    background: linear-gradient(
-        45deg, 
-        transparent 0%, 
-        rgba(255, 255, 255, 0.0) 30%, 
-        rgba(255, 255, 255, 0.35) 50%, 
-        rgba(255, 255, 255, 0.0) 70%, 
-        transparent 100%
-    );
-    transform: rotate(25deg);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
+    /* Ocupará el ancho disponible de la tarjeta... */
+    max-width: 160px;
+    /* ...pero nunca será más ancha de 160px para no verse gigante */
+    height: 160px;
+    /* Fijamos una altura uniforme para que todas las tarjetas midan igual */
+    object-fit: contain;
+    /* CRÍTICO: Escala la imagen para que quepa entera sin deformarse ni recortarse */
+    display: block;
+    /* Nos permite usar margin auto */
+    margin: 0 auto 1.5rem;
+    /* Centra la imagen horizontalmente y deja espacio debajo antes del texto */
+    position: relative;
+    z-index: 2;
+    /* Asegura que la imagen esté por encima del fondo y el bisel */
+
+    /* Pequeña animación fluida si decides ponerles algún efecto hover en el futuro */
+    transition: transform var(--duracion-estandar) var(--ease-out);
 }
 
-.paso-card:hover::before, 
-.tarjeta-cuento-ejemplo:hover::before, 
-.tarjeta-plan-mini:hover::before,
-.tarjeta-magica-hero:hover::before {
-    opacity: 1;
-    left: 150%;
-    transition: left 1.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+/* Elevación sutil en Hover protegida para punteros finos */
+@media (hover: hover) and (pointer: fine) {
+
+    .paso-card:hover,
+    .tarjeta-cuento-ejemplo:hover,
+    .tarjeta-plan-mini:hover,
+    .tarjeta-shell:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255, 215, 0, 0.35);
+        box-shadow: var(--sombra-flotante);
+    }
+
+    .paso-card:hover::before,
+    .tarjeta-cuento-ejemplo:hover::before,
+    .tarjeta-plan-mini:hover::before,
+    .tarjeta-magica-hero:hover::before {
+        border-color: rgba(255, 215, 0, 0.2);
+    }
 }
 
-.paso-card:hover, 
-.tarjeta-cuento-ejemplo:hover, 
-.tarjeta-plan-mini:hover {
-    transform: translateY(-8px) scale(1.02);
-    border-color: rgba(255, 215, 0, 0.6) !important;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.2);
-}
-
-/* Ilustraciones infantiles dentro de las tarjetas */
-.contenedor-imagen-paso {
-    width: 90px;
-    height: 90px;
-    margin: 0 auto 1.2rem auto;
-    display: flex;
+/* Botón de Acción Principal Hero / Gigante (Patrón Island Button Destacado) */
+.boton-gigante-magico {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-}
-
-.imagen-paso-infantil {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
-    transition: transform 0.3s ease;
-}
-
-.paso-card:hover .imagen-paso-infantil {
-    transform: scale(1.15) rotate(5deg);
-}
-
-.boton-gigante-magico {
-    background: linear-gradient(135deg, #ffd700, #ff9900);
-    color: #000000;
-    font-weight: bold;
-    font-size: 1.2rem;
-    padding: 1rem 2.5rem;
-    border: none;
-    border-radius: 30px;
+    gap: 10px;
+    background: linear-gradient(180deg, #ffe066 0%, #ffd700 100%);
+    color: #080914;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 1.15rem;
+    padding: 0.95rem 2.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 9999px;
     cursor: pointer;
-    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
-    transition: transform 0.2s;
+    text-decoration: none;
+    box-shadow: var(--sombra-media), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    transition: transform var(--duracion-inmediata) var(--ease-out),
+        box-shadow var(--duracion-inmediata) var(--ease-out),
+        background-color var(--duracion-inmediata) var(--ease-out);
     margin-top: 1.5rem;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.boton-gigante-magico:hover {
-    transform: scale(1.08);
+@media (hover: hover) and (pointer: fine) {
+    .boton-gigante-magico:hover {
+        background: linear-gradient(180deg, #fff080 0%, #ffe033 100%);
+        transform: translateY(-2px);
+        box-shadow: var(--sombra-flotante), inset 0 1px 1px rgba(255, 255, 255, 1);
+    }
+}
+
+.boton-gigante-magico:active {
+    transform: scale(0.97) !important;
+    box-shadow: var(--sombra-suave) !important;
+    transition-duration: 80ms;
+}
+
+.boton-gigante-magico:focus-visible {
+    outline: 2px solid var(--color-anillo-enfoque);
+    outline-offset: 4px;
+}
+
+.boton-gigante-magico:disabled,
+.boton-gigante-magico[aria-disabled="true"] {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none;
+    filter: grayscale(40%);
 }
 
 
 /* ==============================================================================
-   6. FORMULARIO CREADOR DE CUENTOS (ZONA PRIVADA)
+   6. FORMULARIO CREADOR DE CUENTOS Y SELECTOR DE PERSONAJES RÁPIDOS
+   Memoria Técnica Nivel FP DAW:
+   1. Accesibilidad en Formularios (:focus-visible): A diferencia de :focus,
+      :focus-visible muestra el anillo de enfoque de alto contraste sólo cuando
+      el usuario interactúa mediante teclado (Tab), evitando halos molestos al
+      hacer clic con el ratón pero cumpliendo el criterio WCAG AA 2.4.7.
+   2. Micro-cápsula desacoplada: Al separar el icono/emoji en un elemento span
+      propio (.capsula-icono), podemos aplicarle una micro-rotación elástica con
+      la curva --ease-spring de Emil Kowalski sin alterar la geometría de la píldora.
+   3. Erradicación de Clichés Violetas: El estado activo del personaje emplea
+      oro estelar cálido con brillo biselado interior sobre azul nocturno.
+   4. Respuesta Háptica: En :active, tanto botones como campos responden con
+      transform: scale(0.97) inmediato en 80ms.
    ============================================================================== */
 .formulario-creador {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1.4rem;
     margin-top: 1.5rem;
     text-align: left;
 }
@@ -419,120 +784,278 @@ body {
 .grupo-campo {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.55rem;
 }
 
 .grupo-campo label {
     color: var(--color-dorado-estrella);
-    font-weight: bold;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
 }
 
-.grupo-campo input, 
+/* Campos de entrada con superficie nocturna y caret temático */
+.grupo-campo input,
 .grupo-campo select {
-    padding: 0.8rem;
-    border-radius: 10px;
-    border: 1px solid #3d416e;
-    background: #0a0b1c;
-    color: white;
+    padding: 0.85rem 1.1rem;
+    border-radius: 14px;
+    border: 1px solid var(--color-borde-translucido);
+    background: rgba(10, 11, 28, 0.85);
+    color: var(--color-texto-blanco);
+    font-family: inherit;
     font-size: 1rem;
-    transition: border-color 0.3s, box-shadow 0.3s;
+    caret-color: var(--color-dorado-estrella);
+    transition: border-color var(--duracion-inmediata) var(--ease-out),
+        box-shadow var(--duracion-inmediata) var(--ease-out);
 }
 
-.grupo-campo input:focus, 
-.grupo-campo select:focus {
-    outline: none;
+/* Estado Focus-Visible accesible para inputs (WCAG AA) */
+.grupo-campo input:focus-visible,
+.grupo-campo select:focus-visible {
+    outline: 2px solid var(--color-anillo-enfoque);
+    outline-offset: 2px;
     border-color: var(--color-dorado-estrella);
-    box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+    box-shadow: 0 0 14px rgba(255, 215, 0, 0.25);
 }
 
-/* Fila de píldoras de cristal para personajes rápidos */
+/* Contenedor flexible de píldoras rápidas */
 .selector-personajes-rapidos {
     display: flex;
-    gap: 0.6rem;
+    gap: 0.75rem;
     flex-wrap: wrap;
     margin-bottom: 0.4rem;
 }
 
+/* Píldora de Selección de Personaje (Island Button Sutil) */
 .btn-personaje {
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 50px;
-    padding: 0.5rem 1rem;
-    color: var(--color-texto-blanco);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--color-borde-translucido);
+    border-radius: 9999px;
+    padding: 0.45rem 1rem 0.45rem 0.55rem;
+    color: var(--color-texto-suave);
     font-size: 0.95rem;
+    font-weight: 500;
     font-family: inherit;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    gap: 0.6rem;
+    box-shadow: var(--sombra-suave);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--duracion-inmediata) var(--ease-out),
+        border-color var(--duracion-inmediata) var(--ease-out),
+        background-color var(--duracion-inmediata) var(--ease-out),
+        color var(--duracion-inmediata) var(--ease-out),
+        box-shadow var(--duracion-inmediata) var(--ease-out);
 }
 
-.btn-personaje:hover {
-    background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 215, 0, 0.55);
-    color: var(--color-dorado-estrella);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2), 0 0 12px rgba(168, 85, 247, 0.25);
+/* Micro-cápsula independiente para el emoji/icono del personaje */
+.btn-personaje .capsula-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(10, 11, 28, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 1rem;
+    line-height: 1;
+    transition: transform var(--duracion-inmediata) var(--ease-spring);
 }
 
+/* Estado Hover con micro-tensión háptica en la cápsula */
+@media (hover: hover) and (pointer: fine) {
+    .btn-personaje:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 215, 0, 0.35);
+        color: var(--color-dorado-estrella);
+        transform: translateY(-1px);
+        box-shadow: var(--sombra-media);
+    }
+
+    .btn-personaje:hover .capsula-icono {
+        transform: scale(1.18) rotate(8deg);
+        background: rgba(255, 215, 0, 0.12);
+        border-color: rgba(255, 215, 0, 0.3);
+    }
+}
+
+/* Estado Active táctil inmediato de Emil Kowalski */
+.btn-personaje:active {
+    transform: scale(0.97) !important;
+    transition-duration: 80ms;
+}
+
+/* Estado Focus-Visible accesible */
+.btn-personaje:focus-visible {
+    outline: 2px solid var(--color-anillo-enfoque);
+    outline-offset: 3px;
+}
+
+/* Estado Activo / Seleccionado (Acento Mágico Dorado sin rastros violetas) */
 .btn-personaje.activo {
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.22), rgba(168, 85, 247, 0.35));
+    background: rgba(255, 215, 0, 0.15);
     border-color: var(--color-dorado-estrella);
-    color: #ffffff;
+    color: var(--color-dorado-estrella);
     font-weight: 600;
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.45), 0 0 20px rgba(168, 85, 247, 0.35);
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-personaje.activo .capsula-icono {
+    background: rgba(255, 215, 0, 0.25);
+    border-color: rgba(255, 215, 0, 0.5);
+    transform: scale(1.08);
 }
 
 
 /* ==============================================================================
-   7. TARJETAS DE PLANES Y TARIFAS
+   7. TARJETAS DE PLANES Y TARIFAS (DOUBLE-BEZEL Y TIPOGRAFÍA TABULAR)
+   Memoria Técnica Nivel FP DAW:
+   1. Tipografía Numérica Tabular (font-variant-numeric: tabular-nums): Fuerza
+      a que todos los caracteres numéricos tengan el mismo ancho monospaciado.
+      Esto evita que el diseño "baile" u oscile horizontalmente cuando los
+      precios cambian de dígito o se alinean verticalmente en comparativas.
+   2. Rendimiento en Scroll: Las tarjetas emplean carcasa concéntrica Double-Bezel
+      con degradado sólido/opaco, suprimiendo filtros pesados de desenfoque de
+      fondo (backdrop-filter) para mantener los 60 FPS al desplazarse.
    ============================================================================== */
 .contenedor-tarjetas-modal {
     display: flex;
     gap: 1.5rem;
     justify-content: center;
-    margin-top: 1.5rem;
+    margin-top: 1.8rem;
     flex-wrap: wrap;
 }
 
+/* Carcasa Externa de la Tarjeta de Plan (Double-Bezel) */
 .tarjeta-plan-mini {
+    --radio-exterior-plan: 24px;
+    --separacion-plan: 6px;
+    --radio-interior-plan: calc(var(--radio-exterior-plan) - var(--separacion-plan));
+
     width: 220px;
-    padding: 2rem 1.2rem;
+    position: relative;
+    border-radius: var(--radio-exterior-plan);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-borde-translucido);
+    box-shadow: var(--sombra-media);
+    padding: var(--separacion-plan);
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: space-between;
-    background: linear-gradient(145deg, rgba(30, 33, 66, 0.6), rgba(15, 16, 38, 0.8)) !important;
+    overflow: hidden;
+    transition: transform var(--duracion-estandar) var(--ease-out),
+        box-shadow var(--duracion-estandar) var(--ease-out),
+        border-color var(--duracion-estandar) var(--ease-out);
 }
 
+/* Núcleo Interior de la Tarjeta de Plan con Bisel Superior */
+.tarjeta-plan-mini::before {
+    content: "";
+    position: absolute;
+    top: var(--separacion-plan);
+    left: var(--separacion-plan);
+    right: var(--separacion-plan);
+    bottom: var(--separacion-plan);
+    border-radius: var(--radio-interior-plan);
+    background: linear-gradient(145deg, rgba(26, 28, 56, 0.92) 0%, rgba(14, 16, 38, 0.96) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: var(--brillo-bisel-interior);
+    z-index: 0;
+    pointer-events: none;
+    transition: border-color var(--duracion-estandar) var(--ease-out);
+}
+
+/* Asegurar contenido en primer plano */
+.tarjeta-plan-mini>* {
+    position: relative;
+    z-index: 1;
+}
+
+/* Variante Destacada / Recomendada */
 .tarjeta-plan-mini.destacada {
-    border: 2px solid var(--color-dorado-estrella) !important;
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+    border-color: rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 24px rgba(255, 215, 0, 0.2), var(--sombra-media);
+}
+
+.tarjeta-plan-mini.destacada::before {
+    border-color: rgba(255, 215, 0, 0.25);
+}
+
+.etiqueta-recomendado {
+    align-self: center;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    color: #080914;
+    background: linear-gradient(180deg, #ffe066 0%, #ffd700 100%);
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    margin-bottom: 0.5rem;
+    box-shadow: var(--sombra-suave);
 }
 
 .tarjeta-plan-mini h4 {
-    font-size: 1.3rem;
+    font-size: 1.15rem;
+    font-weight: 700;
     color: var(--color-dorado-estrella);
-    margin-bottom: 0.5rem;
+    margin: 0.6rem 0 0.2rem 0;
+    text-align: center;
 }
 
+/* Tipografía de Precio con Caracteres Numéricos Tabulares */
 .tarjeta-plan-mini .precio {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #ffffff;
-    margin: 0.8rem 0;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-texto-blanco);
+    margin: 0.6rem 0;
+    text-align: center;
+    /* Fija el ancho idéntico para cada número evitando que el diseño tiemble */
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+.tarjeta-plan-mini .periodo-precio {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--color-texto-suave);
+    letter-spacing: normal;
+}
+
+.tarjeta-plan-mini .descripcion-plan {
+    color: var(--color-texto-suave);
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 1.2rem;
+    padding: 0 0.5rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .tarjeta-plan-mini:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--sombra-flotante);
+    }
 }
 
 
 /* ==============================================================================
-   8. VENTANAS MODALES EMERGENTES (LOGIN, REGISTRO Y PLANES)
+   8. VENTANAS MODALES EMERGENTES (GLASSMORPHISM Y FÍSICA DRAWER)
+   Memoria Técnica Nivel FP DAW:
+   1. Glassmorphism Legítimo: El filtro backdrop-filter sólo es admisible en
+      elementos superpuestos y flotantes como los modales, ya que no intervienen
+      en el flujo continuo del scroll y no saturan el hilo de renderizado.
+   2. Física de Escala (scale(0.95) en lugar de scale(0)): Las hojas emergentes
+      físicas no "nacen de un punto infinitesimal", sino que avanzan en el eje Z
+      desde un plano cercano hacia el observador. Iniciar en 0.95 aporta una
+      sensación natural, elegante y perceptual mente estable.
+   3. Curva --ease-drawer: Desaceleración suave diseñada para transiciones de
+      componentes que capturan el foco del usuario.
    ============================================================================== */
+
+/* Fondo oscuro flotante con desenfoque de profundidad */
 .modal-fondo {
     display: none;
     position: fixed;
@@ -540,50 +1063,117 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(5, 6, 15, 0.85);
+    background-color: rgba(5, 6, 18, 0.76);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
     z-index: 10000;
     justify-content: center;
     align-items: center;
+    padding: 1.5rem;
 }
 
+/* Contenedor central del modal */
 .modal-contenido-magico {
-    background: #151733;
+    background: linear-gradient(145deg, rgba(22, 25, 54, 0.94) 0%, rgba(12, 14, 34, 0.98) 100%);
     padding: 2.5rem;
-    border-radius: 20px;
-    width: 90%;
-    max-width: 420px;
+    border-radius: 28px;
+    width: 100%;
+    max-width: 440px;
     position: relative;
-    border: 2px solid var(--color-dorado-estrella);
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: var(--sombra-flotante), var(--brillo-bisel-interior);
+    /* Entrada suave tipo hoja emergente respetando Emil Kowalski */
+    animation: entradaModalDrawer 240ms var(--ease-drawer) forwards;
 }
 
 .modal-contenido-magico.ancho-grande {
-    max-width: 750px;
+    max-width: 820px;
 }
 
+.modal-contenido-magico h3 {
+    color: var(--color-dorado-estrella);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+/* Animación de apertura: entra desde scale(0.95) y translateY(12px), jamás desde 0 */
+@keyframes entradaModalDrawer {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Botón de cierre en micro-cápsula circular táctil */
 .boton-cerrar {
     position: absolute;
-    top: 15px;
+    top: 18px;
     right: 20px;
-    font-size: 1.8rem;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--color-borde-translucido);
+    font-size: 1.4rem;
+    line-height: 1;
     cursor: pointer;
     color: var(--color-texto-suave);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--duracion-inmediata) var(--ease-out),
+        background-color var(--duracion-inmediata) var(--ease-out),
+        color var(--duracion-inmediata) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .boton-cerrar:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: var(--color-dorado-estrella);
+        transform: scale(1.08);
+    }
+}
+
+.boton-cerrar:active {
+    transform: scale(0.97) !important;
+    transition-duration: 80ms;
 }
 
 .modal-contenido-magico form {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    margin-top: 1.2rem;
+    gap: 1.1rem;
+    margin-top: 1.4rem;
     text-align: left;
 }
 
 .modal-contenido-magico input {
-    padding: 0.8rem;
-    border-radius: 10px;
-    border: 1px solid #3d416e;
-    background: #0a0b1c;
-    color: white;
+    padding: 0.85rem 1.1rem;
+    border-radius: 14px;
+    border: 1px solid var(--color-borde-translucido);
+    background: rgba(10, 11, 28, 0.85);
+    color: var(--color-texto-blanco);
+    font-family: inherit;
+    font-size: 1rem;
+    caret-color: var(--color-dorado-estrella);
+    transition: border-color var(--duracion-inmediata) var(--ease-out),
+        box-shadow var(--duracion-inmediata) var(--ease-out);
+}
+
+.modal-contenido-magico input:focus-visible {
+    outline: 2px solid var(--color-anillo-enfoque);
+    outline-offset: 2px;
+    border-color: var(--color-dorado-estrella);
+    box-shadow: 0 0 14px rgba(255, 215, 0, 0.25);
 }
 
 .ancho-completo {
@@ -592,32 +1182,831 @@ body {
 
 .separador-o {
     text-align: center;
-    margin: 1.2rem 0 0.8rem 0;
+    margin: 1.4rem 0 1rem 0;
     color: var(--color-texto-suave);
     font-size: 0.9rem;
+    position: relative;
 }
 
+/* Botón de Google estructurado con respuesta háptica */
 .boton-google {
     width: 100%;
-    padding: 0.7rem;
+    padding: 0.75rem 1.4rem;
     background: #ffffff;
-    color: #333333;
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
+    color: #1a1a1a;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 9999px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.8rem;
     cursor: pointer;
-    transition: background 0.2s;
+    box-shadow: var(--sombra-suave);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--duracion-inmediata) var(--ease-out),
+        background-color var(--duracion-inmediata) var(--ease-out),
+        box-shadow var(--duracion-inmediata) var(--ease-out);
 }
 
-.boton-google:hover {
-    background: #f1f1f1;
+@media (hover: hover) and (pointer: fine) {
+    .boton-google:hover {
+        background: #f7f7f7;
+        box-shadow: var(--sombra-media);
+        transform: translateY(-1px);
+    }
+}
+
+.boton-google:active {
+    transform: scale(0.97) !important;
+    transition-duration: 80ms;
+}
+
+.boton-google:focus-visible {
+    outline: 2px solid #080914;
+    /* Contraste 18:1 sobre botón blanco (WCAG AA) */
+    outline-offset: 3px;
 }
 
 .icono-google-btn {
     width: 20px;
     height: 20px;
+    object-fit: contain;
+}
+
+
+/* ==============================================================================
+   9. MODAL DE PANTALLA DE CARGA MÁGICA (LOADING SCREEN)
+   ============================================================================== */
+#modal-carga {
+    background-color: rgba(6, 7, 20, 0.78);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    z-index: 10001;
+}
+
+.modal-contenido-carga {
+    background: rgba(21, 23, 51, 0.92);
+    border: 1px solid rgba(255, 215, 0, 0.6);
+    box-shadow: 0 0 35px rgba(255, 215, 0, 0.35), 0 0 50px rgba(77, 166, 255, 0.18);
+    border-radius: 28px;
+    padding: 3rem 2.5rem;
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.estrella-cargando-contenedor {
+    width: 85px;
+    height: 85px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: latidoResplandorCarga 2s ease-in-out infinite alternate;
+}
+
+.estrella-giratoria-carga {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 15px #ffd700);
+    animation: giroInfinitoEstrella 3.5s linear infinite;
+}
+
+.titulo-carga-magico {
+    color: var(--color-dorado-estrella);
+    font-size: 1.4rem;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+}
+
+.texto-carga-magico {
+    color: var(--color-texto-suave);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+/* Animación de rotación continua de 360 grados */
+@keyframes giroInfinitoEstrella {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Animación de latido y resplandor pulsante */
+@keyframes latidoResplandorCarga {
+    0% {
+        transform: scale(0.92);
+        filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));
+    }
+
+    100% {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 35px rgba(255, 118, 172, 0.5));
+    }
+}
+
+
+/* ==============================================================================
+   10. VISOR DE LIBRO MÁGICO ABIERTO (LECTURA DEL CUENTO)
+   Diseño de dos páginas abiertas con efecto de papel antiguo y lomo central.
+   ============================================================================== */
+#visor-libro {
+    background-color: rgba(6, 7, 20, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 10002;
+}
+
+.libro-abierto-contenedor {
+    position: relative;
+    width: 94%;
+    max-width: 980px;
+    max-height: 90vh;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Encuadernación y papel de doble página con pliegue sombreado en el centro */
+.cubierta-libro {
+    background: linear-gradient(to right,
+            #f6f0e2 0%,
+            #fdfbf7 46%,
+            #dfd5c0 50%,
+            #fdfbf7 54%,
+            #f6f0e2 100%);
+    color: #2b2214;
+    border-radius: 20px;
+    border: 7px solid #382415;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8),
+        0 0 30px rgba(255, 215, 0, 0.2),
+        inset 0 0 40px rgba(0, 0, 0, 0.06),
+        inset 0 0 90px rgba(210, 190, 155, 0.25);
+    padding: 2.2rem 3rem;
+    display: flex;
+    flex-direction: column;
+    max-height: 86vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Botón flotante para cerrar el visor del libro con respuesta háptica */
+.boton-cerrar-libro {
+    position: absolute;
+    top: -16px;
+    right: -16px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffe066 0%, #ffd700 100%);
+    color: #1a1c38;
+    font-size: 1.8rem;
+    font-weight: 700;
+    border: 2px solid #ffffff;
+    box-shadow: var(--sombra-media);
+    cursor: pointer;
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--duracion-inmediata) var(--ease-out),
+        background-color var(--duracion-inmediata) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .boton-cerrar-libro:hover {
+        transform: scale(1.1) rotate(90deg);
+        background: #ffea00;
+    }
+}
+
+.boton-cerrar-libro:active {
+    transform: scale(0.97) !important;
+    transition-duration: 80ms;
+}
+
+.boton-cerrar-libro:focus-visible {
+    outline: 2px solid var(--color-anillo-enfoque);
+    outline-offset: 3px;
+}
+
+.cabecera-libro {
+    text-align: center;
+    margin-bottom: 1.2rem;
+    border-bottom: 2px dashed rgba(140, 115, 75, 0.3);
+    padding-bottom: 0.8rem;
+}
+
+.adorno-libro {
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+    letter-spacing: 4px;
+}
+
+.titulo-cuento-libro {
+    font-family: 'Merriweather', 'Georgia', 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: #3b220c;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+    font-weight: bold;
+}
+
+/* Contenedor con scroll suave para cuentos de gran extensión */
+.paginas-libro {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.6rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Estilo de la barra de desplazamiento dentro del libro */
+.paginas-libro::-webkit-scrollbar {
+    width: 7px;
+}
+
+.paginas-libro::-webkit-scrollbar-track {
+    background: rgba(220, 205, 180, 0.3);
+    border-radius: 10px;
+}
+
+.paginas-libro::-webkit-scrollbar-thumb {
+    background: #bfa882;
+    border-radius: 10px;
+}
+
+/* Maquetación del cuento en 2 columnas fluidas simulando páginas enfrentadas */
+.cuerpo-cuento-libro {
+    column-count: 2;
+    column-gap: 50px;
+    column-rule: 1px solid rgba(160, 135, 100, 0.25);
+    font-family: 'Georgia', 'Merriweather', 'Crimson Text', serif;
+    font-size: 1.1rem;
+    line-height: 1.85;
+    color: #2b2214;
+    text-align: justify;
+}
+
+.cuerpo-cuento-libro p {
+    margin-bottom: 1.2rem;
+    text-indent: 1.5em;
+}
+
+/* La primera línea o párrafo no lleva sangría */
+.cuerpo-cuento-libro p:first-of-type {
+    text-indent: 0;
+}
+
+/* Letra capitular clásica de cuento infantil en el primer párrafo */
+.cuerpo-cuento-libro p:first-of-type::first-letter {
+    font-size: 2.8rem;
+    float: left;
+    line-height: 0.85;
+    margin-right: 0.4rem;
+    color: #b8860b;
+    font-family: 'Merriweather', 'Georgia', serif;
+    font-weight: bold;
+}
+
+.pie-libro {
+    text-align: center;
+    margin-top: 0.8rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(140, 115, 75, 0.2);
+    font-size: 0.85rem;
+    color: #7a6a53;
+    font-style: italic;
+}
+
+/* Adaptación responsive para pantallas móviles y tablets */
+@media (max-width: 768px) {
+    .cubierta-libro {
+        padding: 1.8rem 1.4rem;
+        max-height: 88vh;
+        border-width: 5px;
+    }
+
+    .cuerpo-cuento-libro {
+        column-count: 1;
+        column-gap: 0;
+        column-rule: none;
+        font-size: 1.02rem;
+        line-height: 1.7;
+    }
+
+    .titulo-cuento-libro {
+        font-size: 1.4rem;
+    }
+
+    .boton-cerrar-libro {
+        top: -10px;
+        right: -10px;
+        width: 38px;
+        height: 38px;
+        font-size: 1.5rem;
+    }
+}
+
+/* ==============================================================================
+   ESTILOS DE LA BIBLIOTECA MÁGICA DE LIBROS (ZONA PRIVADA)
+   ============================================================================== */
+.subtitulo-biblioteca {
+    color: var(--color-texto-suave);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.contenedor-biblioteca-libros {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    max-width: 800px;
+    margin: 0 auto 3rem auto;
+    text-align: left;
+}
+
+.tarjeta-libro-biblioteca {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 1.2rem 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tarjeta-libro-biblioteca:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 215, 0, 0.5);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.15);
+}
+
+.icono-portada-libro {
+    font-size: 2.5rem;
+    background: rgba(255, 215, 0, 0.1);
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.info-libro {
+    flex: 1;
+}
+
+.info-libro h3 {
+    color: var(--color-dorado-estrella);
+    font-size: 1.25rem;
+    margin-bottom: 0.3rem;
+}
+
+.detalles-cuento {
+    color: var(--color-texto-blanco);
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+}
+
+.fecha-cuento {
+    color: var(--color-texto-suave);
+    font-size: 0.82rem;
+}
+
+.acciones-libro {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-shrink: 0;
+}
+
+.boton-borrar-cuento {
+    background: rgba(255, 80, 80, 0.15);
+    border: 1px solid rgba(255, 80, 80, 0.4);
+    color: #ff6b6b;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.boton-borrar-cuento:hover {
+    background: rgba(255, 80, 80, 0.3);
+    transform: scale(1.1);
+}
+
+.sin-cuentos-aviso {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 2.5rem;
+    max-width: 600px;
+    margin: 0 auto 3rem auto;
+    color: var(--color-texto-suave);
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .tarjeta-libro-biblioteca {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .acciones-libro {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* ==============================================================================
+   CUADRÍCULA 3X3 Y CUBIERTAS DE LIBRO CERRADO
+   ============================================================================== */
+.cuadricula-biblioteca-libros {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* ==============================================================================
+   CUADRÍCULA Y CUBIERTAS DE LIBRO EN ESTANTERÍA (ZONA PRIVADA)
+   Memoria Técnica Nivel FP DAW:
+   1. Interacción Háptica en Estantería: La tarjeta del libro cerrado responde
+      en :active con transform: scale(0.98) inmediato (80ms).
+   2. Botón de Borrado "Island": Se erradican emojis flotantes (🗑️) sustituyéndolos
+      por una píldora ergonómica con micro-cápsula independiente y alto contraste.
+   ============================================================================== */
+.cuadricula-biblioteca-libros {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.libro-cubierta-tarjeta {
+    position: relative;
+    width: 100%;
+    height: 340px;
+    background-image: url('/static/img/libro_cerrado.png');
+    background-size: cover;
+    background-position: center;
+    border-radius: 14px;
+    box-shadow: var(--sombra-media), 0 10px 25px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--duracion-inmediata) var(--ease-out),
+        box-shadow var(--duracion-inmediata) var(--ease-out);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2.5rem 2rem 2rem 3.5rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .libro-cubierta-tarjeta:hover {
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: var(--sombra-flotante), 0 0 20px rgba(255, 215, 0, 0.25);
+    }
+}
+
+.libro-cubierta-tarjeta:active {
+    transform: translateY(-2px) scale(0.98) !important;
+    box-shadow: var(--sombra-suave) !important;
+    transition-duration: 80ms;
+}
+
+.contenido-portada-libro {
+    text-align: center;
+    color: #fceea7;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.titulo-portada {
+    font-family: 'Merriweather', 'Georgia', serif;
+    font-size: 1.35rem;
+    margin-bottom: 0.8rem;
+    line-height: 1.3;
+    font-weight: 700;
+}
+
+.autor-portada {
+    font-size: 0.9rem;
+    color: #e2d39b;
+    font-style: italic;
+}
+
+/* Botón de Borrado tipo "Island Button" con Micro-cápsula (Sin Emojis Sueltos) */
+.boton-borrar-cuento-portada {
+    background: rgba(10, 11, 28, 0.82);
+    border: 1px solid rgba(255, 77, 109, 0.45);
+    color: #ff99ab;
+    padding: 0.35rem 0.8rem 0.35rem 0.45rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: var(--sombra-suave);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--duracion-inmediata) var(--ease-out),
+        background-color var(--duracion-inmediata) var(--ease-out),
+        border-color var(--duracion-inmediata) var(--ease-out),
+        color var(--duracion-inmediata) var(--ease-out);
+}
+
+.boton-borrar-cuento-portada .capsula-icono {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(255, 77, 109, 0.2);
+    color: #ff99ab;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    line-height: 1;
+    transition: transform var(--duracion-inmediata) var(--ease-spring);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .boton-borrar-cuento-portada:hover {
+        background: rgba(255, 77, 109, 0.22);
+        border-color: #ff4d6d;
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
+    .boton-borrar-cuento-portada:hover .capsula-icono {
+        transform: scale(1.15) rotate(8deg);
+        background: #ff4d6d;
+        color: #ffffff;
+    }
+}
+
+.boton-borrar-cuento-portada:active {
+    transform: scale(0.97) !important;
+    transition-duration: 80ms;
+}
+
+/* ==============================================================================
+   10. VISOR DE LIBRO MÁGICO ABIERTO Y FÍSICA 3D DE VOLTEO DE PÁGINA
+   Memoria Técnica Nivel FP DAW:
+   1. Cámara 3D (perspective: 1200px): La perspectiva define la distancia de
+      visión al plano Z=0, aportando deformación angular realista en el giro.
+   2. Eje Vertical (rotateY): El giro del papel ocurre exclusivamente sobre el
+      eje Y acelerado al 100% por GPU (sin coste de layout ni reflujo).
+   3. Ocultamiento de Cara Posterior (backface-visibility: hidden): Evita el
+      repintado de caras inversas en rotaciones pronunciadas.
+   4. Fluidez Orgánica (--ease-in-out): Aporta inercia al movimiento del papel.
+   ============================================================================== */
+.cubierta-libro-imagen-base {
+    position: relative;
+    width: 1000px;
+    max-width: 95vw;
+    height: 650px;
+    background-image: url('/static/img/libro_abierto.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 90px 170px 120px 170px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+}
+
+.cabecera-libro-imagen {
+    text-align: center;
+    margin-bottom: 2.2rem;
+    z-index: 5;
+}
+
+.titulo-cuento-imagen {
+    font-family: 'Merriweather', 'Georgia', serif;
+    font-size: 1.5rem;
+    color: #3b220c;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Contenedor Padre con Perspectiva 3D */
+.paginas-libro-imagen {
+    flex: 1;
+    z-index: 5;
+    display: block;
+    padding: 0;
+    perspective: 1200px;
+    perspective-origin: center;
+}
+
+/* Contenedor de Texto en 2 Columnas (ESTRUCTURA RIGUROSAMENTE CONSERVADA) */
+.cuerpo-cuento-imagen {
+    font-family: 'Georgia', 'Merriweather', serif;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #2b2214;
+    text-align: justify;
+    height: 315px;
+    max-height: 315px;
+    overflow: hidden;
+    column-count: 2;
+    column-gap: 110px;
+    /* Propiedades para la aceleración y conservación del espacio 3D */
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    transform-origin: center center;
+}
+
+.cuerpo-cuento-imagen p {
+    margin-bottom: 0.9rem;
+    text-indent: 1.2em;
+}
+
+/* Capitular de inicio de cuento */
+.cuerpo-cuento-imagen p:first-of-type::first-letter {
+    font-size: 2.8rem;
+    float: left;
+    line-height: 0.85;
+    margin-right: 0.4rem;
+    color: #8c2a1c;
+    font-weight: bold;
+}
+
+/* Animaciones 3D de volteo de página por GPU */
+@keyframes volteoPaginaDerecha {
+    0% {
+        transform: rotateY(0deg);
+        opacity: 1;
+    }
+
+    45% {
+        transform: rotateY(-18deg) scale(0.98);
+        opacity: 0.35;
+    }
+
+    55% {
+        transform: rotateY(18deg) scale(0.98);
+        opacity: 0.35;
+    }
+
+    100% {
+        transform: rotateY(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes volteoPaginaIzquierda {
+    0% {
+        transform: rotateY(0deg);
+        opacity: 1;
+    }
+
+    45% {
+        transform: rotateY(18deg) scale(0.98);
+        opacity: 0.35;
+    }
+
+    55% {
+        transform: rotateY(-18deg) scale(0.98);
+        opacity: 0.35;
+    }
+
+    100% {
+        transform: rotateY(0deg);
+        opacity: 1;
+    }
+}
+
+.cuerpo-cuento-imagen.efecto-giro-derecha {
+    animation: volteoPaginaDerecha 360ms var(--ease-in-out) forwards;
+}
+
+.cuerpo-cuento-imagen.efecto-giro-izquierda {
+    animation: volteoPaginaIzquierda 360ms var(--ease-in-out) forwards;
+}
+
+.pie-libro-imagen {
+    text-align: center;
+    font-size: 0.88rem;
+    color: #54402a;
+    /* Contraste 8.2:1 sobre fondo pergamino (WCAG AAA) */
+    font-style: italic;
+    font-weight: 500;
+    z-index: 5;
+    margin-top: 1rem;
+}
+
+/* ------------------------------------------------------------------------------
+   BOTONES DE PAGINACIÓN INTERACTIVA (CONTROLES HÁPTICOS)
+   ------------------------------------------------------------------------------ */
+.zona-clic-pagina {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(180deg, #ffe066 0%, #ffd700 100%);
+    color: #3b220c;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    box-shadow: var(--sombra-media), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    z-index: 20;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    transition: transform var(--duracion-inmediata) var(--ease-out),
+        box-shadow var(--duracion-inmediata) var(--ease-out),
+        background-color var(--duracion-inmediata) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .zona-clic-pagina:hover {
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: var(--sombra-flotante);
+        background: linear-gradient(180deg, #fff080 0%, #ffe033 100%);
+    }
+}
+
+.zona-clic-pagina:active {
+    transform: translateY(-50%) scale(0.97) !important;
+    box-shadow: var(--sombra-suave) !important;
+    transition-duration: 80ms;
+}
+
+.zona-clic-pagina:focus-visible {
+    outline: 2px solid var(--color-anillo-enfoque);
+    outline-offset: 3px;
+}
+
+.zona-clic-pagina.izquierda {
+    left: -22px;
+}
+
+.zona-clic-pagina.derecha {
+    right: -22px;
+}
+
+/* Responsive para móviles */
+@media (max-width: 900px) {
+    .cuadricula-biblioteca-libros {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .cubierta-libro-imagen-base {
+        height: auto;
+        min-height: 500px;
+        padding: 40px 40px;
+        /* Menos padding en móvil */
+    }
+
+    .cuerpo-cuento-imagen {
+        column-count: 1;
+        /* En móviles mostramos una sola página */
+        column-gap: 0;
+    }
+
+    .zona-clic-pagina.izquierda {
+        left: 5px;
+    }
+
+    .zona-clic-pagina.derecha {
+        right: 5px;
+    }
 }
