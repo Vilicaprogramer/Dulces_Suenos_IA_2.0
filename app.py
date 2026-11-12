@@ -6,12 +6,12 @@
 
 # Importamos las librerías necesarias del sistema y de Python
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 from dotenv import load_dotenv
 
 # Importamos los componentes del framework Flask
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
 
 # Importamos el ORM SQLAlchemy para interactuar con la base de datos
 from flask_sqlalchemy import SQLAlchemy
@@ -34,6 +34,9 @@ app = Flask(__name__)
 
 # Clave secreta para firmar las cookies de sesión y mensajes flash
 app.config['SECRET_KEY'] = 'clave_secreta_provisoria_dulces_suenos_2026'
+
+# Establecemos el tiempo máximo de inactividad de la sesión (30 minutos)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
 # Conexión a la base de datos (por defecto usará la base de datos SQLite local si no hay otra definida)
 url_base_datos = os.getenv('DATABASE_URL')
@@ -123,6 +126,15 @@ def cargar_usuario_por_id(id_del_usuario):
 # 3. CONTROLADORES Y RUTAS DE LA APLICACIÓN WEB
 # ==============================================================================
 
+# Interceptor: Se ejecuta ANTES de cualquier ruta para reiniciar el reloj de inactividad
+@app.before_request
+def actualizar_tiempo_sesion():
+    if current_user.is_authenticated:
+        # Marcamos la sesión como permanente para que respete el PERMANENT_SESSION_LIFETIME
+        session.permanent = True
+        # Indicamos que la sesión ha sido modificada, lo que reinicia el contador a 60 minutos
+        session.modified = True
+        
 # Ruta 1: Página principal (Landing pública o Panel de creación si el usuario ya inició sesión)
 @app.route('/')
 def pagina_inicio():
@@ -415,4 +427,4 @@ if __name__ == '__main__':
             print("INFO: Usuario Administrador creado: admin@dulcessuenos.ai")
 
     # Arrancamos el servidor de desarrollo de Flask
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

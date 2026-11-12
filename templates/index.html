@@ -38,16 +38,19 @@
         <!-- Logotipo con imagen de la estrella y nombre del proyecto -->
         <div class="logotipo-web">
             <img src="/static/img/estrella.png" alt="Logo Estrella" class="icono-logo-estrella">
-            Dulces Sueños AI
+            <span class="logo-texto-completo">Dulces Sueños AI</span>
+            <span class="logo-texto-corto">DSAI</span>
         </div>
 
         <nav class="menu-enlaces">
             <!-- Condicional Jinja2: Comprobamos si el usuario ha iniciado sesión -->
             {% if current_user.is_authenticated %}
             <!-- Si tiene sesión iniciada, mostramos un saludo y el botón para cerrar sesión -->
-            <span class="saludo-usuario">Hola, {{ current_user.nombre_completo or current_user.correo_electronico
-                }}</span>
-            <a href="/logout" class="boton-secundario">Cerrar Sesión</a>
+            <span class="saludo-usuario" title="Hola, {{ current_user.nombre_completo or current_user.correo_electronico }}">Hola, {{ current_user.nombre_completo or current_user.correo_electronico }}</span>
+            <a href="/logout" class="boton-secundario boton-cerrar-sesion" title="Cerrar Sesión" aria-label="Cerrar Sesión">
+                <span class="texto-cerrar-sesion">Cerrar Sesión</span>
+                <span class="icono-cerrar-sesion" aria-hidden="true">✕</span>
+            </a>
             {% else %}
             <!-- Si es visitante, mostramos los enlaces de anclaje y botones de acceso -->
             <a href="#inicio">Inicio</a>
@@ -160,6 +163,7 @@
                         <p class="autor-portada">Protagonista: {{ cuento.nombre_personaje }}</p>
                     </div>
                     <form action="/borrar-cuento/{{ cuento.id_cuento }}" method="POST"
+                        class="form-borrar-cuento-portada"
                         style="position: absolute; bottom: 14px; right: 14px; z-index: 5;"
                         onclick="event.stopPropagation();">
                         <button type="submit" class="boton-borrar-cuento-portada"
@@ -355,6 +359,21 @@
 
     <!-- Modal Visor de Libro Mágico Abierto con efecto de páginas -->
     <div id="visor-libro" class="modal-fondo">
+        <!-- Pantalla superpuesta de aviso de giro en orientación vertical para móviles -->
+        <div id="aviso-giro-vertical" class="pantalla-aviso-giro">
+            <button type="button" class="boton-cerrar-aviso-giro" onclick="cerrar_ventana_modal('visor-libro')"
+                title="Cerrar" aria-label="Cerrar">✕ Cerrar</button>
+            <div class="tarjeta-aviso-giro">
+                <div class="contenedor-icono-giratorio" aria-hidden="true">
+                    <div class="dispositivo-movil-animado">
+                        <div class="pantalla-dispositivo-movil">⭐</div>
+                    </div>
+                    <div class="flecha-indicador-giro">↻</div>
+                </div>
+                <p class="mensaje-aviso-giro">Gira tu móvil en horizontal para abrir el libro y empezar a leer</p>
+            </div>
+        </div>
+
         <div class="libro-abierto-contenedor">
             <button type="button" class="boton-cerrar-libro" onclick="cerrar_ventana_modal('visor-libro')"
                 title="Cerrar libro">&times;</button>

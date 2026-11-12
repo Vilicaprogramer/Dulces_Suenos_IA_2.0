@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     iniciar_selector_de_personajes_rapidos();
     iniciar_formulario_creador_de_cuentos();
     configurar_eventos_globales_modales();
+    iniciar_control_responsive_movil();
 });
 
 // ==============================================================================
@@ -270,5 +271,40 @@ function abrirCuentoDesdeHTML(elementoTarjeta) {
         abrirCuentoEnLibro(titulo, texto);
     } catch (error) {
         console.error("Error al abrir el libro:", error);
+    }
+}
+
+// ==============================================================================
+// 6. OPTIMIZACIÓN RESPONSIVE MÓVIL Y ORIENTACIÓN
+// ==============================================================================
+function iniciar_control_responsive_movil() {
+    verificarMarcaAbreviadaHeader();
+    window.addEventListener("resize", verificarMarcaAbreviadaHeader);
+
+    // Listener de cambio de orientación para refrescar lectura y marca
+    window.addEventListener("orientationchange", function () {
+        setTimeout(function () {
+            verificarMarcaAbreviadaHeader();
+            const visor = document.getElementById("visor-libro");
+            if (visor && (visor.style.display === "flex" || getComputedStyle(visor).display === "flex")) {
+                actualizarVistaPaginaLibro();
+            }
+        }, 150);
+    });
+}
+
+function verificarMarcaAbreviadaHeader() {
+    const header = document.querySelector(".barra-navegacion");
+    const logo = document.querySelector(".logotipo-web");
+    if (!header || !logo) return;
+
+    // Detecta si la pantalla es <= 768px o si el contenido del header desborda el ancho disponible
+    const esMovil = window.innerWidth <= 768;
+    const desbordaHorizontal = header.scrollWidth > header.clientWidth;
+
+    if (esMovil || desbordaHorizontal) {
+        logo.classList.add("usar-marca-corta");
+    } else {
+        logo.classList.remove("usar-marca-corta");
     }
 }

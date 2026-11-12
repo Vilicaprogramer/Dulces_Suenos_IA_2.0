@@ -296,6 +296,20 @@ textarea {
     text-shadow: 0 0 12px rgba(255, 215, 0, 0.35);
     user-select: none;
     cursor: pointer;
+    white-space: nowrap;
+}
+
+.logotipo-web .logo-texto-corto {
+    display: none;
+}
+
+.logotipo-web.usar-marca-corta .logo-texto-completo {
+    display: none;
+}
+
+.logotipo-web.usar-marca-corta .logo-texto-corto {
+    display: inline;
+    white-space: nowrap;
 }
 
 .icono-logo-estrella {
@@ -351,6 +365,13 @@ textarea {
     background: rgba(255, 215, 0, 0.08);
     border: 1px solid rgba(255, 215, 0, 0.2);
     border-radius: 9999px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.boton-cerrar-sesion .icono-cerrar-sesion {
+    display: none;
 }
 
 /* ------------------------------------------------------------------------------
@@ -1834,8 +1855,8 @@ textarea {
 /* Contenedor de Texto en 2 Columnas (ESTRUCTURA RIGUROSAMENTE CONSERVADA) */
 .cuerpo-cuento-imagen {
     font-family: 'Georgia', 'Merriweather', serif;
-    font-size: 1.05rem;
-    line-height: 1.7;
+    font-size: clamp(0.82rem, 1.8vw, 1.05rem);
+    line-height: 1.45;
     color: #2b2214;
     text-align: justify;
     height: 315px;
@@ -1856,10 +1877,10 @@ textarea {
 
 /* Capitular de inicio de cuento */
 .cuerpo-cuento-imagen p:first-of-type::first-letter {
-    font-size: 2.8rem;
+    font-size: clamp(1.8rem, 3.8vw, 2.8rem);
     float: left;
     line-height: 0.85;
-    margin-right: 0.4rem;
+    margin-right: 0.35rem;
     color: #8c2a1c;
     font-weight: bold;
 }
@@ -1920,12 +1941,23 @@ textarea {
 .pie-libro-imagen {
     text-align: center;
     font-size: 0.88rem;
-    color: #54402a;
-    /* Contraste 8.2:1 sobre fondo pergamino (WCAG AAA) */
-    font-style: italic;
-    font-weight: 500;
+    color: #2c1d11;
     z-index: 5;
     margin-top: 1rem;
+    box-sizing: border-box;
+}
+
+#indicador-paginas {
+    color: #2c1d11;
+    font-weight: 600;
+    font-size: 0.85rem;
+    background: rgba(255, 248, 231, 0.85);
+    padding: 2px 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(140, 115, 75, 0.25);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    display: inline-block;
+    white-space: nowrap;
 }
 
 /* ------------------------------------------------------------------------------
@@ -1983,30 +2015,476 @@ textarea {
     right: -22px;
 }
 
-/* Responsive para móviles */
-@media (max-width: 900px) {
+/* ==============================================================================
+   11. PANTALLA SUPERPUESTA DE AVISO DE GIRO (MÓVIL VERTICAL)
+   ============================================================================== */
+.pantalla-aviso-giro {
+    display: none;
+}
+
+.boton-cerrar-aviso-giro {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--color-texto-blanco);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 9999px;
+    padding: 0.5rem 1.15rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: var(--sombra-suave);
+    z-index: 10006;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--duracion-inmediata) var(--ease-out),
+        background-color var(--duracion-inmediata) var(--ease-out);
+}
+
+.boton-cerrar-aviso-giro:active {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.tarjeta-aviso-giro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 320px;
+    margin: auto;
+}
+
+.contenedor-icono-giratorio {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    margin-bottom: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dispositivo-movil-animado {
+    width: 44px;
+    height: 74px;
+    border: 3px solid var(--color-dorado-estrella);
+    border-radius: 9px;
+    position: relative;
+    background: rgba(26, 28, 56, 0.9);
+    box-shadow: 0 0 24px rgba(255, 215, 0, 0.35);
+    animation: animRotacionTelefono 2.6s ease-in-out infinite;
+    transform-origin: center center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dispositivo-movil-animado::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 2px;
+    background: rgba(255, 215, 0, 0.6);
+    border-radius: 2px;
+}
+
+.dispositivo-movil-animado::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 215, 0, 0.6);
+}
+
+.pantalla-dispositivo-movil {
+    font-size: 1.15rem;
+    animation: animPulsoEstrella 2.6s ease-in-out infinite;
+}
+
+.flecha-indicador-giro {
+    position: absolute;
+    bottom: -6px;
+    right: -6px;
+    font-size: 1.6rem;
+    color: var(--color-dorado-estrella);
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
+    animation: animGiroFlecha 2.6s linear infinite;
+}
+
+@keyframes animRotacionTelefono {
+    0%, 15% {
+        transform: rotate(0deg);
+    }
+    45%, 70% {
+        transform: rotate(-90deg);
+    }
+    90%, 100% {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes animPulsoEstrella {
+    0%, 15% {
+        transform: scale(0.85);
+        opacity: 0.7;
+    }
+    45%, 70% {
+        transform: scale(1.25);
+        opacity: 1;
+    }
+    90%, 100% {
+        transform: scale(0.85);
+        opacity: 0.7;
+    }
+}
+
+@keyframes animGiroFlecha {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.mensaje-aviso-giro {
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: #ffffff;
+    font-weight: 600;
+    max-width: 290px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+/* ==============================================================================
+   12. DISEÑO RESPONSIVE Y MEJORAS UI/UX MÓVIL (@media max-width: 768px)
+   ============================================================================== */
+
+/* Tablets intermedias (769px a 900px): Cuadrícula de 2 columnas */
+@media (max-width: 900px) and (min-width: 769px) {
     .cuadricula-biblioteca-libros {
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Teléfonos y Dispositivos Móviles (<= 768px) */
+@media (max-width: 768px) {
+    /* 1. Header compacto y marca abreviada (DSAI) */
+    .barra-navegacion {
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
     }
 
+    .logotipo-web {
+        white-space: nowrap;
+        flex-shrink: 0;
+        font-size: 1.25rem;
+        gap: 8px;
+    }
+
+    .logotipo-web .logo-texto-completo {
+        display: none;
+    }
+
+    .logotipo-web .logo-texto-corto {
+        display: inline;
+        white-space: nowrap;
+    }
+
+    /* 2. Prioridad al saludo del usuario y botón de cierre (X) */
+    .menu-enlaces {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex: 1;
+        min-width: 0;
+        gap: 8px;
+        margin-left: 8px;
+    }
+
+    .saludo-usuario {
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: right;
+        font-size: 0.85rem;
+        padding: 0.35rem 0.65rem;
+    }
+
+    .boton-cerrar-sesion {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        padding: 0;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .boton-cerrar-sesion .texto-cerrar-sesion {
+        display: none;
+    }
+
+    .boton-cerrar-sesion .icono-cerrar-sesion {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        line-height: 1;
+    }
+
+    /* Enlaces y botones de visitante en header móvil para garantizar single-line nowrap */
+    .menu-enlaces a:not([class*="boton-"]):not(.boton-cerrar-sesion) {
+        display: none;
+    }
+
+    .menu-enlaces .boton-plan-link {
+        display: none;
+    }
+
+    .menu-enlaces .boton-principal,
+    .menu-enlaces .boton-secundario:not(.boton-cerrar-sesion) {
+        padding: 0.45rem 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    /* 3. Tamaño amigable de los libros en la biblioteca móvil */
+    .cuadricula-biblioteca-libros {
+        grid-template-columns: 1fr;
+        gap: 1.8rem;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .libro-cubierta-tarjeta {
+        max-width: 240px;
+        width: 72%;
+        margin: 0 auto;
+        height: 295px;
+        padding: 1.8rem 1.2rem 1.8rem 2.2rem;
+    }
+
+    .titulo-portada {
+        font-size: 1.05rem;
+        margin-bottom: 0.4rem;
+        line-height: 1.25;
+    }
+
+    .autor-portada {
+        font-size: 0.78rem;
+    }
+
+    .form-borrar-cuento-portada {
+        bottom: 10px !important;
+        right: 10px !important;
+    }
+
+    .boton-borrar-cuento-portada {
+        padding: 0.25rem 0.55rem 0.25rem 0.35rem;
+        font-size: 0.72rem;
+        gap: 0.35rem;
+    }
+
+    .boton-borrar-cuento-portada .capsula-icono {
+        width: 17px;
+        height: 17px;
+        font-size: 0.65rem;
+    }
+}
+
+/* ==============================================================================
+   13. LECTOR DE LIBRO ABIERTO: BLOQUEO VERTICAL + MODO HORIZONTAL MÓVIL
+   ============================================================================== */
+
+/* Aviso de giro en móvil vertical: Oculta libro abierto y muestra aviso centrado */
+@media (max-width: 768px) and (orientation: portrait) {
+    #visor-libro .libro-abierto-contenedor {
+        display: none !important;
+    }
+
+    #visor-libro .pantalla-aviso-giro {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        padding: 2rem 1.5rem;
+        background: rgba(10, 11, 28, 0.96);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        z-index: 10005;
+        text-align: center;
+        box-sizing: border-box;
+    }
+}
+
+/* Modo horizontal móvil y pantallas pequeñas: Ajuste de márgenes y tipografía al leer */
+@media (max-height: 600px) and (orientation: landscape) {
+    #visor-libro {
+        padding: 4px;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    #visor-libro .pantalla-aviso-giro {
+        display: none !important;
+    }
+
+    #visor-libro .libro-abierto-contenedor {
+        display: flex !important;
+        width: 98vw;
+        max-width: 860px;
+        height: 96vh;
+        max-height: 520px;
+        margin: auto;
+        position: relative;
+        box-sizing: border-box;
+    }
+
+    /* 1. Encajar el texto estrictamente dentro de las páginas de papel crema */
     .cubierta-libro-imagen-base {
-        height: auto;
-        min-height: 500px;
-        padding: 40px 40px;
-        /* Menos padding en móvil */
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        max-height: 96vh;
+        min-height: unset;
+        box-sizing: border-box;
+        /* Entre un 14% y 16% de margen interior para confinar el texto únicamente sobre la zona clara del papel */
+        padding: 18px 15% 26px 15%;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cabecera-libro-imagen {
+        margin-bottom: 0.3rem;
+        box-sizing: border-box;
+    }
+
+    .titulo-cuento-imagen {
+        font-size: clamp(0.84rem, 2vw, 1.1rem);
+    }
+
+    .paginas-libro-imagen {
+        flex: 1;
+        min-height: 0;
+        box-sizing: border-box;
     }
 
     .cuerpo-cuento-imagen {
-        column-count: 1;
-        /* En móviles mostramos una sola página */
-        column-gap: 0;
+        font-family: 'Georgia', 'Merriweather', serif;
+        font-size: clamp(0.75rem, 1.55vw, 0.92rem);
+        line-height: 1.38;
+        color: #2b2214;
+        text-align: justify;
+        box-sizing: border-box;
+        height: 100%;
+        max-height: calc(100% - 24px);
+        overflow: hidden;
+        column-count: 2;
+        /* Espacio central amplio junto al lomo del libro para no pisar el pliegue central */
+        column-gap: clamp(50px, 12%, 85px);
+    }
+
+    .cuerpo-cuento-imagen p {
+        margin-bottom: 0.35rem;
+        text-indent: 0.8em;
+        box-sizing: border-box;
+    }
+
+    /* Letra capital reducida proporcionalmente para armonizar con el texto sin generar huecos */
+    .cuerpo-cuento-imagen p:first-of-type::first-letter {
+        font-size: clamp(1.3rem, 2.4vw, 1.65rem);
+        line-height: 0.88;
+        margin-right: 0.16rem;
+        float: left;
+        color: #8c2a1c;
+        font-weight: 700;
+    }
+
+    /* 2. Subir y hacer legible el indicador de paginación ("Página X de Y") */
+    .pie-libro-imagen {
+        position: absolute;
+        bottom: 11.5%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        pointer-events: none;
+        box-sizing: border-box;
+    }
+
+    #indicador-paginas {
+        color: #2c1d11;
+        font-weight: 600;
+        font-size: clamp(0.72rem, 1.4vw, 0.82rem);
+        background: rgba(255, 248, 231, 0.88);
+        padding: 2px 10px;
+        border-radius: 12px;
+        border: 1px solid rgba(140, 115, 75, 0.28);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    /* 3. Despejar los botones laterales (< y >) pegados a los bordes exteriores */
+    .zona-clic-pagina {
+        position: fixed !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 1.1rem !important;
+        z-index: 10004 !important;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
     }
 
     .zona-clic-pagina.izquierda {
-        left: 5px;
+        left: 10px !important;
+        right: auto !important;
     }
 
     .zona-clic-pagina.derecha {
-        right: 5px;
+        right: 10px !important;
+        left: auto !important;
+    }
+
+    .boton-cerrar-libro {
+        top: -6px;
+        right: -6px;
+        width: 32px;
+        height: 32px;
+        font-size: 1.3rem;
     }
 }
