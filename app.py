@@ -33,7 +33,7 @@ load_dotenv()
 app = Flask(__name__)
 
 # Clave secreta para firmar las cookies de sesión y mensajes flash
-app.config['SECRET_KEY'] = 'clave_secreta_provisoria_dulces_suenos_2026'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'clave_secreta_provisoria_dulces_suenos_2026')
 
 # Establecemos el tiempo máximo de inactividad de la sesión (30 minutos)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
