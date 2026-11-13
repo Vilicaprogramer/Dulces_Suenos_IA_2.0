@@ -117,48 +117,144 @@ function iniciar_selector_de_personajes_rapidos() {
 }
 
 // ==============================================================================
-// 3. LECTOR DE LIBROS CON PAGINACIÓN INTERACTIVA
+// 3. LECTOR DE LIBROS CON PAGINACIÓN DINÁMICA POR ALTURA REAL
 // ==============================================================================
 let paginasDelCuentoActual = [];
 let indicePaginaActual = 0;
+let tituloCuentoActual = "";
+let textoCuentoActual = "";
+let cuentoRecienCreado = false;
 
-function abrirCuentoEnLibro(titulo, texto) {
+function abrirCuentoEnLibro(titulo, texto, esNuevo = false) {
+    tituloCuentoActual = titulo;
+    textoCuentoActual = texto;
+    cuentoRecienCreado = esNuevo;
+
     const elemento_titulo = document.getElementById("libro-titulo-cuento");
     if (elemento_titulo) {
         elemento_titulo.textContent = titulo;
     }
 
-    const lineas = texto.split("\n");
-    let parrafos = [];
-    for (let i = 0; i < lineas.length; i++) {
-        let p = lineas[i].trim();
-        if (p.length > 0) {
-            parrafos.push("<p>" + p + "</p>");
-        }
-    }
+    // 1. Abrimos el modal ANTES de paginar para que #libro-cuerpo-cuento tenga ancho y alto reales
+    abrir_ventana_modal("visor-libro");
 
-    paginasDelCuentoActual = [];
-    let parrafosPorPagina = 2;
-    for (let i = 0; i < parrafos.length; i += parrafosPorPagina) {
-        paginasDelCuentoActual.push(parrafos.slice(i, i + parrafosPorPagina).join(""));
-    }
+    // 2. Calculamos las páginas exactas que caben en la altura visible del contenedor
+    paginasDelCuentoActual = paginarTextoPorAlturaReal(texto);
 
     if (paginasDelCuentoActual.length === 0) {
-        paginasDelCuentoActual = ["<p>El cuento está vacío.</p>"];
+        paginasDelCuentoActual = ["<p class='primer-parrafo-cuento'>El cuento está vacío.</p>"];
     }
 
     indicePaginaActual = 0;
     actualizarVistaPaginaLibro();
-    abrir_ventana_modal("visor-libro");
 }
 
 /**
- * Paginación interactiva con animación 3D de volteo de hoja (Emil Kowalski).
- * Memoria Técnica Nivel FP DAW:
- * En lugar de alternar instantáneamente el contenido HTML, aplicamos una clase
- * CSS con transformación rotateY() en el eje vertical Z=0. A mitad de la
- * rotación (180ms), cuando el elemento alcanza el punto ciego de ángulo,
- * se actualiza el texto de la página, completando el retorno fluido a 0 grados.
+ * Reparte el cuento en páginas reales midiendo scrollHeight vs clientHeight
+ * para que ninguna línea quede cortada ni se pierdan palabras al pasar página.
+ */
+function paginarTextoPorAlturaReal(texto) {
+    const cuerpo = document.getElementById("libro-cuerpo-cuento");
+    if (!cuerpo) return [];
+
+    // Altura máxima disponible dentro del contenedor del libro (con margen de seguridad)
+    const alturaMaxima = cuerpo.clientHeight - 8;
+    if (alturaMaxima <= 40) {
+        // Fallback si el contenedor aún no tiene dimensiones calculadas
+        return texto
+            .split("\n")
+            .map(l => l.trim())
+            .filter(l => l.length > 0)
+            .map((p, idx) => `<p class="${idx === 0 ? 'primer-parrafo-cuento' : ''}">${p}</p>`);
+    }
+
+    // Creamos un clon invisible con exactamente el mismo ancho, tipografía y columnas que el visor
+    const medidor = document.createElement("div");
+    const estilos = window.getComputedStyle(cuerpo);
+    medidor.style.position = "absolute";
+    medidor.style.visibility = "hidden";
+    medidor.style.pointerEvents = "none";
+    medidor.style.width = cuerpo.clientWidth + "px";
+    medidor.style.height = alturaMaxima + "px";
+    medidor.style.fontFamily = estilos.fontFamily;
+    medidor.style.fontSize = estilos.fontSize;
+    medidor.style.lineHeight = estilos.lineHeight;
+    medidor.style.padding = estilos.padding;
+    medidor.style.boxSizing = estilos.boxSizing;
+    medidor.style.columnCount = estilos.columnCount;
+    medidor.style.columnGap = estilos.columnGap;
+    medidor.style.overflow = "hidden";
+    cuerpo.parentElement.appendChild(medidor);
+
+    const parrafosOriginales = texto
+        .split("\n")
+        .map(l => l.trim())
+        .filter(l => l.length > 0);
+
+    const paginas = [];
+    let htmlPaginaActual = "";
+    let esPrimerParrafoDelCuento = true;
+
+    for (let i = 0; i < parrafosOriginales.length; i++) {
+        const palabras = parrafosOriginales[i].split(/\s+/);
+        let idxPalabra = 0;
+
+        while (idxPalabra < palabras.length) {
+            const claseInicial = esPrimerParrafoDelCuento ? ' class="primer-parrafo-cuento"' : '';
+            let bloqueEnConstruccion = "";
+            let palabrasQueCaben = 0;
+
+            // Añadimos palabra a palabra hasta llenar la altura exacta de la página
+            for (let j = idxPalabra; j < palabras.length; j++) {
+                const candidato = bloqueEnConstruccion
+                    ? bloqueEnConstruccion + " " + palabras[j]
+                    : palabras[j];
+                medidor.innerHTML = htmlPaginaActual + `<p${claseInicial}>${candidato}</p>`;
+
+                // Comprobamos desbordamiento tanto vertical como horizontal (por si usa column-count: 2)
+                if (medidor.scrollHeight <= alturaMaxima && medidor.scrollWidth <= cuerpo.clientWidth + 2) {
+                    bloqueEnConstruccion = candidato;
+                    palabrasQueCaben++;
+                } else {
+                    break;
+                }
+            }
+
+            if (palabrasQueCaben === 0) {
+                // La página actual ya está llena: la guardamos y abrimos una nueva página
+                if (htmlPaginaActual.trim().length > 0) {
+                    paginas.push(htmlPaginaActual);
+                    htmlPaginaActual = "";
+                } else {
+                    // Seguridad por si una palabra suelta fuese más ancha que la caja
+                    htmlPaginaActual += `<p${claseInicial}>${palabras[idxPalabra]}</p>`;
+                    idxPalabra++;
+                    esPrimerParrafoDelCuento = false;
+                }
+            } else {
+                htmlPaginaActual += `<p${claseInicial}>${bloqueEnConstruccion}</p>`;
+                idxPalabra += palabrasQueCaben;
+                esPrimerParrafoDelCuento = false;
+
+                // Si aún quedan palabras de este mismo párrafo, cerramos página y seguimos en la siguiente
+                if (idxPalabra < palabras.length) {
+                    paginas.push(htmlPaginaActual);
+                    htmlPaginaActual = "";
+                }
+            }
+        }
+    }
+
+    if (htmlPaginaActual.trim().length > 0) {
+        paginas.push(htmlPaginaActual);
+    }
+
+    medidor.remove();
+    return paginas;
+}
+
+/**
+ * Paginación interactiva con animación 3D de volteo de hoja.
  */
 function cambiarPaginaLibro(direccion) {
     let nuevoIndice = indicePaginaActual + direccion;
@@ -167,16 +263,14 @@ function cambiarPaginaLibro(direccion) {
         if (cuerpo) {
             const claseAnimacion = direccion > 0 ? "efecto-giro-derecha" : "efecto-giro-izquierda";
             cuerpo.classList.remove("efecto-giro-derecha", "efecto-giro-izquierda");
-            void cuerpo.offsetWidth; // Forzar reflujo de GPU para reiniciar el ciclo de animación
+            void cuerpo.offsetWidth;
             cuerpo.classList.add(claseAnimacion);
 
-            // Reemplazo del texto en el cenit del giro
             setTimeout(function () {
                 indicePaginaActual = nuevoIndice;
                 actualizarVistaPaginaLibro();
             }, 180);
 
-            // Limpieza de clases al terminar la transición
             setTimeout(function () {
                 cuerpo.classList.remove("efecto-giro-derecha", "efecto-giro-izquierda");
             }, 380);
@@ -243,7 +337,8 @@ function iniciar_formulario_creador_de_cuentos() {
             const resultado = await respuesta.json();
 
             if (respuesta.ok) {
-                abrirCuentoEnLibro(resultado.titulo, resultado.cuento);
+                // Pasamos true para que al cerrar el libro se actualice la estantería con el nuevo cuento
+                abrirCuentoEnLibro(resultado.titulo, resultado.cuento, true);
             } else {
                 alert("Aviso del servidor: " + resultado.message);
             }
@@ -260,37 +355,66 @@ function iniciar_formulario_creador_de_cuentos() {
 }
 
 // ==============================================================================
-// 5. APERTURA DE LIBROS DESDE LA BIBLIOTECA (MÉTODO INFALIBLE)
+// 5. APERTURA DE LIBROS DESDE LA BIBLIOTECA
 // ==============================================================================
 function abrirCuentoDesdeHTML(elementoTarjeta) {
     try {
-        // Extraemos el texto del textarea oculto, que conserva saltos de línea perfectamente
         const titulo = elementoTarjeta.querySelector(".titulo-oculto").textContent;
         const texto = elementoTarjeta.querySelector(".texto-oculto").value;
 
-        abrirCuentoEnLibro(titulo, texto);
+        abrirCuentoEnLibro(titulo, texto, false);
     } catch (error) {
         console.error("Error al abrir el libro:", error);
     }
 }
 
 // ==============================================================================
-// 6. OPTIMIZACIÓN RESPONSIVE MÓVIL Y ORIENTACIÓN
+// 6. OPTIMIZACIÓN RESPONSIVE MÓVIL, ORIENTACIÓN Y NAVEGACIÓN POR TECLADO
 // ==============================================================================
 function iniciar_control_responsive_movil() {
     verificarMarcaAbreviadaHeader();
-    window.addEventListener("resize", verificarMarcaAbreviadaHeader);
 
-    // Listener de cambio de orientación para refrescar lectura y marca
+    let temporizadorResize;
+    window.addEventListener("resize", function () {
+        verificarMarcaAbreviadaHeader();
+        clearTimeout(temporizadorResize);
+        temporizadorResize = setTimeout(recalcularPaginasSiVisorAbierto, 200);
+    });
+
     window.addEventListener("orientationchange", function () {
         setTimeout(function () {
             verificarMarcaAbreviadaHeader();
-            const visor = document.getElementById("visor-libro");
-            if (visor && (visor.style.display === "flex" || getComputedStyle(visor).display === "flex")) {
-                actualizarVistaPaginaLibro();
-            }
-        }, 150);
+            recalcularPaginasSiVisorAbierto();
+        }, 200);
     });
+
+    // Navegación cómoda con flechas del teclado cuando el libro está abierto
+    window.addEventListener("keydown", function (evento) {
+        const visor = document.getElementById("visor-libro");
+        const estaAbierto = visor && (visor.style.display === "flex" || getComputedStyle(visor).display === "flex");
+        if (!estaAbierto) return;
+
+        if (evento.key === "ArrowRight") {
+            cambiarPaginaLibro(1);
+        } else if (evento.key === "ArrowLeft") {
+            cambiarPaginaLibro(-1);
+        }
+    });
+}
+
+function recalcularPaginasSiVisorAbierto() {
+    const visor = document.getElementById("visor-libro");
+    if (visor && (visor.style.display === "flex" || getComputedStyle(visor).display === "flex") && textoCuentoActual) {
+        const progresoRelativo = paginasDelCuentoActual.length > 0
+            ? indicePaginaActual / paginasDelCuentoActual.length
+            : 0;
+        paginasDelCuentoActual = paginarTextoPorAlturaReal(textoCuentoActual);
+        indicePaginaActual = Math.min(
+            Math.floor(progresoRelativo * paginasDelCuentoActual.length),
+            Math.max(0, paginasDelCuentoActual.length - 1)
+        );
+        actualizarVistaPaginaLibro();
+    }
 }
 
 function verificarMarcaAbreviadaHeader() {
@@ -298,7 +422,6 @@ function verificarMarcaAbreviadaHeader() {
     const logo = document.querySelector(".logotipo-web");
     if (!header || !logo) return;
 
-    // Detecta si la pantalla es <= 768px o si el contenido del header desborda el ancho disponible
     const esMovil = window.innerWidth <= 768;
     const desbordaHorizontal = header.scrollWidth > header.clientWidth;
 
