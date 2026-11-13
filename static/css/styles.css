@@ -1,18 +1,13 @@
 /* ==============================================================================
    PROYECTO DE DESARROLLO DE APLICACIONES WEB (DAW)
    PROYECTO: Dulces Sueños AI 2.0
-   ARCHIVO: static/css/styles.css (Hoja de Estilos CSS3)
+   ARCHIVO: static/css/styles.css (Hoja de Estilos CSS3 Optimizada)
    ============================================================================== */
 
 /* ==============================================================================
    1. VARIABLES CSS GLOBALES, DESIGN TOKENS Y SUPERFICIES NATIVAS
-   Memoria Técnica: Definición centralizada de tokens de diseño bajo metodología
-   de variables CSS3 nativas. Incluye paleta nocturna infantil (Taste), curvas
-   de aceleración de GPU (Emil Kowalski), elevación con física multicapa y
-   personalización de superficies del navegador (Impeccable Craft).
    ============================================================================== */
 :root {
-    /* --- PALETA CROMÁTICA NOCTURNA INFANTIL (TASTE FRONTEND) --- */
     --color-fondo-nocturno: #0a0b1c;
     --color-fondo-superficie: #10122e;
     --color-purpura-magico: #1a1c38;
@@ -24,29 +19,20 @@
     --color-borde-translucido: rgba(255, 255, 255, 0.08);
     --color-anillo-enfoque: #ffd700;
 
-    /* --- CURVAS DE TRANSICIÓN Y FÍSICA DE MOVIMIENTO (EMIL KOWALSKI) --- */
-    /* Curva obligatoria para entradas rápidas y feedback táctil inmediato */
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-    /* Curva simétrica para traslaciones y reordenamientos en pantalla */
     --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-    /* Curva de desaceleración pesada para modales, hojas emergentes y drawers */
     --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-    /* Rebote elástico sutil para elementos lúdicos y celebraciones */
     --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
 
-    /* Duraciones estandarizadas para evitar animaciones perezosas */
     --duracion-inmediata: 160ms;
     --duracion-estandar: 240ms;
 
-    /* --- SOMBRAS CON FÍSICA REAL (IMPECCABLE CRAFT) --- */
-    /* Desplazamiento vertical positivo y dispersión multicapa (sin halos planos) */
     --sombra-suave: 0 2px 8px -2px rgba(0, 0, 0, 0.4), 0 1px 4px -1px rgba(0, 0, 0, 0.25);
     --sombra-media: 0 12px 24px -6px rgba(0, 0, 0, 0.5), 0 4px 8px -2px rgba(0, 0, 0, 0.3);
     --sombra-flotante: 0 24px 48px -12px rgba(0, 0, 0, 0.65), 0 8px 16px -4px rgba(0, 0, 0, 0.35);
     --brillo-bisel-interior: inset 0 1px 1px rgba(255, 255, 255, 0.14);
 }
 
-/* Reinicio de márgenes, rellenos y modelo de caja para consistencia entre navegadores */
 *,
 *::before,
 *::after {
@@ -55,7 +41,6 @@
     padding: 0;
 }
 
-/* Estilos base del documento y renderizado de texto */
 body {
     font-family: 'Fredoka', 'Segoe UI', Quicksand, sans-serif;
     background-color: var(--color-fondo-nocturno);
@@ -67,21 +52,16 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- SUPERFICIES NATIVAS DEL NAVEGADOR (IMPECCABLE CRAFT) --- */
-
-/* Selección de texto adaptada a la temática mágica */
 ::selection {
     background-color: rgba(255, 215, 0, 0.3);
     color: var(--color-dorado-estrella);
 }
 
-/* Barra de desplazamiento nativa integrada en Firefox */
 html {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 215, 0, 0.3) var(--color-fondo-nocturno);
 }
 
-/* Barra de desplazamiento nativa integrada en WebKit (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -102,26 +82,21 @@ html {
     background: rgba(255, 215, 0, 0.5);
 }
 
-/* Navegación accesible por teclado: anillo de alto contraste (WCAG AA) */
 :focus-visible {
     outline: 2px solid var(--color-anillo-enfoque);
     outline-offset: 3px;
 }
 
-/* Suprime el contorno visual cuando la interacción proviene de clic de ratón o toque */
 :focus:not(:focus-visible) {
     outline: none;
 }
 
-/* Cursor de inserción de texto adaptado a la temática */
 input,
 textarea {
     caret-color: var(--color-dorado-estrella);
 }
 
-/* --- ACCESIBILIDAD: RESPETO A PREFERENCIAS DEL SISTEMA (EMIL KOWALSKI) --- */
 @media (prefers-reduced-motion: reduce) {
-
     *,
     *::before,
     *::after {
@@ -131,7 +106,6 @@ textarea {
         scroll-behavior: auto !important;
     }
 }
-
 
 /* ==============================================================================
    2. PANTALLA DE BIENVENIDA (SPLASH SCREEN) Y ANIMACIÓN 3D
@@ -152,7 +126,6 @@ textarea {
     transition: opacity 1.2s ease, visibility 1.2s ease;
 }
 
-/* Imagen de la estrella que vuela hacia la pantalla simulando profundidad 3D */
 .estrella-mario {
     position: absolute;
     width: 60px;
@@ -164,7 +137,6 @@ textarea {
     animation: vueloEstrella3D 2.2s cubic-bezier(0.25, 1, 0.5, 1) 0.3s forwards;
 }
 
-/* Animación que escala y rota la estrella en el espacio tridimensional */
 @keyframes vueloEstrella3D {
     0% {
         top: 5%;
@@ -172,11 +144,9 @@ textarea {
         transform: scale(0.2) rotate(0deg) translateZ(-500px);
         opacity: 0;
     }
-
     30% {
         opacity: 1;
     }
-
     80% {
         top: 40%;
         right: 40%;
@@ -184,7 +154,6 @@ textarea {
         opacity: 1;
         filter: drop-shadow(0 0 50px #ffd700);
     }
-
     100% {
         top: 50%;
         right: 50%;
@@ -193,7 +162,6 @@ textarea {
     }
 }
 
-/* Contenedor del logotipo del Splash Screen */
 .logo-bienvenida {
     opacity: 0;
     transform: translateY(30px);
@@ -221,7 +189,6 @@ textarea {
     }
 }
 
-
 /* ==============================================================================
    3. FONDO GLOBAL FIJO DE ESTRELLAS ANIMADAS
    ============================================================================== */
@@ -236,7 +203,6 @@ textarea {
     overflow: hidden;
 }
 
-/* Cada estrella creada dinámicamente mediante JavaScript */
 .estrella-brillante {
     position: absolute;
     background-color: #ffffff;
@@ -244,13 +210,11 @@ textarea {
     animation: tintinear var(--duracion, 2s) infinite ease-in-out alternate;
 }
 
-/* Efecto de parpadeo suave con variación de escala y brillo */
 @keyframes tintinear {
     0% {
         opacity: 0.2;
         transform: scale(0.8);
     }
-
     100% {
         opacity: 1;
         transform: scale(1.3);
@@ -258,17 +222,9 @@ textarea {
     }
 }
 
-
 /* ==============================================================================
    4. BARRA DE NAVEGACIÓN Y COMPONENTES DE BOTONERA (ISLAND BUTTONS)
-   Memoria Técnica: Implementación de cabecera persistente con glassmorphism de alta
-   precisión (saturación y desenfoque por GPU) y arquitectura "Island Button"
-   (botones píldora táctiles). Incorpora respuesta háptica inmediata en :active
-   (Emil Kowalski) y la matriz íntegra de 8 estados (Impeccable Craft), erradicando
-   el cliché de degradados violetas para respetar la paleta nocturna natural.
    ============================================================================== */
-
-/* Cabecera persistente con desenfoque de fondo y borde milimétrico */
 .barra-navegacion {
     display: flex;
     justify-content: space-between;
@@ -285,7 +241,6 @@ textarea {
     transition: background-color var(--duracion-estandar) var(--ease-out);
 }
 
-/* Logotipo con contenedor interactivo y micro-rotación elástica */
 .logotipo-web {
     display: flex;
     align-items: center;
@@ -326,14 +281,12 @@ textarea {
     }
 }
 
-/* Menú de navegación con espaciado macro para airear la interfaz */
 .menu-enlaces {
     display: flex;
     align-items: center;
     gap: 1.25rem;
 }
 
-/* Enlaces de navegación con transición suave y micro-interacción */
 .menu-enlaces a:not([class*="boton-"]) {
     color: var(--color-texto-suave);
     text-decoration: none;
@@ -374,11 +327,7 @@ textarea {
     display: none;
 }
 
-/* ------------------------------------------------------------------------------
-   ARQUITECTURA DE BOTONES "ISLAND BUTTON" Y MATRIZ DE 8 ESTADOS
-   ------------------------------------------------------------------------------ */
-
-/* 1. ESTADO BASE: Píldora táctil ergonómica con elevación física */
+/* Botones Island */
 .boton-principal,
 .boton-secundario,
 .boton-plan-link {
@@ -403,7 +352,6 @@ textarea {
         color var(--duracion-inmediata) var(--ease-out);
 }
 
-/* Botón Principal (Isla Cálida: Oro Estelar con contraste WCAG AA 9.8:1) */
 .boton-principal {
     background: linear-gradient(180deg, #ffe066 0%, #ffd700 100%);
     color: #080914;
@@ -412,7 +360,6 @@ textarea {
     box-shadow: var(--sombra-suave), inset 0 1px 1px rgba(255, 255, 255, 0.8);
 }
 
-/* Botón Secundario (Isla Nocturna de Superficie con Borde Translúcido) */
 .boton-secundario {
     background: rgba(255, 255, 255, 0.04);
     color: var(--color-texto-blanco);
@@ -421,7 +368,6 @@ textarea {
     box-shadow: var(--sombra-suave), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* Botón Enlace / Planes (Píldora Sutil Rosa Ensueño) */
 .boton-plan-link {
     background: transparent;
     border: 1px solid transparent;
@@ -429,7 +375,6 @@ textarea {
     padding: 0.65rem 1.1rem;
 }
 
-/* Micro-cápsula independiente para iconos en botones (Taste Frontend) */
 .capsula-icono {
     display: inline-flex;
     align-items: center;
@@ -442,7 +387,6 @@ textarea {
     transition: transform var(--duracion-inmediata) var(--ease-spring);
 }
 
-/* 2. ESTADO HOVER: Elevación protegida para punteros finos */
 @media (hover: hover) and (pointer: fine) {
     .boton-principal:hover {
         background: linear-gradient(180deg, #fff080 0%, #ffe033 100%);
@@ -469,7 +413,6 @@ textarea {
     }
 }
 
-/* 3. ESTADO ACTIVE: Respuesta háptica táctil inmediata (Emil Kowalski) */
 .boton-principal:active,
 .boton-secundario:active,
 .boton-plan-link:active {
@@ -478,7 +421,6 @@ textarea {
     transition-duration: 80ms;
 }
 
-/* 4. ESTADO FOCUS-VISIBLE: Anillo de alto contraste para teclado (WCAG AA) */
 .boton-principal:focus-visible,
 .boton-secundario:focus-visible,
 .boton-plan-link:focus-visible {
@@ -486,7 +428,6 @@ textarea {
     outline-offset: 3px;
 }
 
-/* 5. ESTADO DISABLED: Inhibición funcional accesible con legibilidad garantizada (WCAG AA) */
 .boton-principal:disabled,
 .boton-principal[aria-disabled="true"],
 .boton-secundario:disabled,
@@ -501,7 +442,6 @@ textarea {
     box-shadow: none;
 }
 
-/* 6. ESTADO LOADING: Indicador de carga integrado no intrusivo */
 .boton-principal.esta-cargando,
 .boton-principal[data-cargando="true"],
 .boton-secundario.esta-cargando,
@@ -542,23 +482,8 @@ textarea {
     }
 }
 
-/* 7. ESTADO ERROR: Alerta visual contextual */
-.boton-principal.estado-error,
-.boton-secundario.estado-error {
-    border-color: #ff4d6d;
-    background: rgba(255, 77, 109, 0.15);
-    color: #ff99ab;
-}
-
-/* 8. ESTADO VACÍO / NEUTRO: Variante tenue para acciones opcionales */
-.boton-secundario.estado-vacio {
-    opacity: 0.65;
-    border-style: dashed;
-}
-
-
 /* ==============================================================================
-   5. CONTENEDORES, SECCIONES Y EFECTO CRISTAL (GLASSMORPHISM)
+   5. CONTENEDORES, SECCIONES Y ARQUITECTURA DOUBLE-BEZEL
    ============================================================================== */
 .seccion-hero {
     padding: 4rem 2rem;
@@ -586,25 +511,6 @@ textarea {
     flex-wrap: wrap;
 }
 
-/* ==============================================================================
-   ARQUITECTURA "DOUBLE-BEZEL" PARA CONTENEDORES Y TARJETAS (TASTE FRONTEND)
-   Memoria Técnica Nivel FP DAW:
-   1. Carcasa Externa (Outer Shell): Define el perímetro geométrico con radio R=28px
-      y un borde translúcido de 1px.
-   2. Núcleo Interior (Inner Core): Situado a una distancia concéntrica constante
-      mediante pseudo-elemento o envoltura interna.
-   3. Radio Concéntrico: Se calcula matemáticamente como R_interior = calc(R_exterior - padding).
-      Si usáramos el mismo radio para ambos bordes, las curvas no serían paralelas y se
-      produciría un aplastamiento visual en las esquinas. Con este cálculo, los arcos
-      comparten el mismo centro geométrico exacto.
-   4. Brillo Biselado (Bezel Highlight): box-shadow: inset 0 1px 1px rgba(255,255,255,0.14)
-      simula la incidencia de una luz cenital en el bisel maquinado superior.
-   5. Optimización de Rendimiento GPU: Se erradica backdrop-filter en estas tarjetas
-      que hacen scroll continuo para evitar recalcular filtros por cuadro. Se sustituye
-      por degradados oscuros de alta opacidad garantizando 60 FPS estables.
-   ============================================================================== */
-
-/* 1. CARCASA EXTERIOR (OUTER SHELL) */
 .paso-card,
 .tarjeta-cuento-ejemplo,
 .tarjeta-plan-mini,
@@ -620,13 +526,11 @@ textarea {
     border: 1px solid var(--color-borde-translucido);
     box-shadow: var(--sombra-media);
     overflow: hidden;
-    /* Elevación orgánica por GPU sin alterar el layout */
     transition: transform var(--duracion-estandar) var(--ease-out),
         box-shadow var(--duracion-estandar) var(--ease-out),
         border-color var(--duracion-estandar) var(--ease-out);
 }
 
-/* 2. NÚCLEO INTERIOR (INNER CORE) CON RADIO CONCÉNTRICO Y BISEL */
 .paso-card::before,
 .tarjeta-cuento-ejemplo::before,
 .tarjeta-plan-mini::before,
@@ -646,7 +550,6 @@ textarea {
     transition: border-color var(--duracion-estandar) var(--ease-out);
 }
 
-/* Soporte directo para estructura HTML con clase .tarjeta-core */
 .tarjeta-core {
     background: linear-gradient(145deg, rgba(26, 28, 56, 0.90) 0%, rgba(14, 16, 38, 0.96) 100%);
     border-radius: calc(28px - 8px);
@@ -657,7 +560,6 @@ textarea {
     z-index: 1;
 }
 
-/* Aseguramos que el contenido descanse sobre el núcleo interior */
 .paso-card>*,
 .tarjeta-cuento-ejemplo>*,
 .tarjeta-plan-mini>*,
@@ -666,7 +568,6 @@ textarea {
     z-index: 1;
 }
 
-/* Dimensiones y espaciados macro */
 .tarjeta-magica-hero {
     padding: 3rem 2.5rem;
     max-width: 800px;
@@ -680,34 +581,20 @@ textarea {
     text-align: center;
 }
 
-/* ==============================================================================
-   AJUSTE DE IMÁGENES DENTRO DE LAS TARJETAS (CRAFT FLOOR)
-   ============================================================================== */
 .paso-card img,
 .tarjeta-cuento-ejemplo img {
     width: 100%;
-    /* Ocupará el ancho disponible de la tarjeta... */
     max-width: 160px;
-    /* ...pero nunca será más ancha de 160px para no verse gigante */
     height: 160px;
-    /* Fijamos una altura uniforme para que todas las tarjetas midan igual */
     object-fit: contain;
-    /* CRÍTICO: Escala la imagen para que quepa entera sin deformarse ni recortarse */
     display: block;
-    /* Nos permite usar margin auto */
     margin: 0 auto 1.5rem;
-    /* Centra la imagen horizontalmente y deja espacio debajo antes del texto */
     position: relative;
     z-index: 2;
-    /* Asegura que la imagen esté por encima del fondo y el bisel */
-
-    /* Pequeña animación fluida si decides ponerles algún efecto hover en el futuro */
     transition: transform var(--duracion-estandar) var(--ease-out);
 }
 
-/* Elevación sutil en Hover protegida para punteros finos */
 @media (hover: hover) and (pointer: fine) {
-
     .paso-card:hover,
     .tarjeta-cuento-ejemplo:hover,
     .tarjeta-plan-mini:hover,
@@ -725,7 +612,6 @@ textarea {
     }
 }
 
-/* Botón de Acción Principal Hero / Gigante (Patrón Island Button Destacado) */
 .boton-gigante-magico {
     display: inline-flex;
     align-items: center;
@@ -778,21 +664,8 @@ textarea {
     filter: grayscale(40%);
 }
 
-
 /* ==============================================================================
    6. FORMULARIO CREADOR DE CUENTOS Y SELECTOR DE PERSONAJES RÁPIDOS
-   Memoria Técnica Nivel FP DAW:
-   1. Accesibilidad en Formularios (:focus-visible): A diferencia de :focus,
-      :focus-visible muestra el anillo de enfoque de alto contraste sólo cuando
-      el usuario interactúa mediante teclado (Tab), evitando halos molestos al
-      hacer clic con el ratón pero cumpliendo el criterio WCAG AA 2.4.7.
-   2. Micro-cápsula desacoplada: Al separar el icono/emoji en un elemento span
-      propio (.capsula-icono), podemos aplicarle una micro-rotación elástica con
-      la curva --ease-spring de Emil Kowalski sin alterar la geometría de la píldora.
-   3. Erradicación de Clichés Violetas: El estado activo del personaje emplea
-      oro estelar cálido con brillo biselado interior sobre azul nocturno.
-   4. Respuesta Háptica: En :active, tanto botones como campos responden con
-      transform: scale(0.97) inmediato en 80ms.
    ============================================================================== */
 .formulario-creador {
     display: flex;
@@ -815,7 +688,6 @@ textarea {
     letter-spacing: 0.01em;
 }
 
-/* Campos de entrada con superficie nocturna y caret temático */
 .grupo-campo input,
 .grupo-campo select {
     padding: 0.85rem 1.1rem;
@@ -830,7 +702,6 @@ textarea {
         box-shadow var(--duracion-inmediata) var(--ease-out);
 }
 
-/* Estado Focus-Visible accesible para inputs (WCAG AA) */
 .grupo-campo input:focus-visible,
 .grupo-campo select:focus-visible {
     outline: 2px solid var(--color-anillo-enfoque);
@@ -839,7 +710,6 @@ textarea {
     box-shadow: 0 0 14px rgba(255, 215, 0, 0.25);
 }
 
-/* Contenedor flexible de píldoras rápidas */
 .selector-personajes-rapidos {
     display: flex;
     gap: 0.75rem;
@@ -847,7 +717,6 @@ textarea {
     margin-bottom: 0.4rem;
 }
 
-/* Píldora de Selección de Personaje (Island Button Sutil) */
 .btn-personaje {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--color-borde-translucido);
@@ -871,7 +740,6 @@ textarea {
         box-shadow var(--duracion-inmediata) var(--ease-out);
 }
 
-/* Micro-cápsula independiente para el emoji/icono del personaje */
 .btn-personaje .capsula-icono {
     display: inline-flex;
     align-items: center;
@@ -886,7 +754,6 @@ textarea {
     transition: transform var(--duracion-inmediata) var(--ease-spring);
 }
 
-/* Estado Hover con micro-tensión háptica en la cápsula */
 @media (hover: hover) and (pointer: fine) {
     .btn-personaje:hover {
         background: rgba(255, 255, 255, 0.08);
@@ -903,19 +770,16 @@ textarea {
     }
 }
 
-/* Estado Active táctil inmediato de Emil Kowalski */
 .btn-personaje:active {
     transform: scale(0.97) !important;
     transition-duration: 80ms;
 }
 
-/* Estado Focus-Visible accesible */
 .btn-personaje:focus-visible {
     outline: 2px solid var(--color-anillo-enfoque);
     outline-offset: 3px;
 }
 
-/* Estado Activo / Seleccionado (Acento Mágico Dorado sin rastros violetas) */
 .btn-personaje.activo {
     background: rgba(255, 215, 0, 0.15);
     border-color: var(--color-dorado-estrella);
@@ -930,17 +794,8 @@ textarea {
     transform: scale(1.08);
 }
 
-
 /* ==============================================================================
    7. TARJETAS DE PLANES Y TARIFAS (DOUBLE-BEZEL Y TIPOGRAFÍA TABULAR)
-   Memoria Técnica Nivel FP DAW:
-   1. Tipografía Numérica Tabular (font-variant-numeric: tabular-nums): Fuerza
-      a que todos los caracteres numéricos tengan el mismo ancho monospaciado.
-      Esto evita que el diseño "baile" u oscile horizontalmente cuando los
-      precios cambian de dígito o se alinean verticalmente en comparativas.
-   2. Rendimiento en Scroll: Las tarjetas emplean carcasa concéntrica Double-Bezel
-      con degradado sólido/opaco, suprimiendo filtros pesados de desenfoque de
-      fondo (backdrop-filter) para mantener los 60 FPS al desplazarse.
    ============================================================================== */
 .contenedor-tarjetas-modal {
     display: flex;
@@ -950,7 +805,6 @@ textarea {
     flex-wrap: wrap;
 }
 
-/* Carcasa Externa de la Tarjeta de Plan (Double-Bezel) */
 .tarjeta-plan-mini {
     --radio-exterior-plan: 24px;
     --separacion-plan: 6px;
@@ -972,7 +826,6 @@ textarea {
         border-color var(--duracion-estandar) var(--ease-out);
 }
 
-/* Núcleo Interior de la Tarjeta de Plan con Bisel Superior */
 .tarjeta-plan-mini::before {
     content: "";
     position: absolute;
@@ -989,13 +842,11 @@ textarea {
     transition: border-color var(--duracion-estandar) var(--ease-out);
 }
 
-/* Asegurar contenido en primer plano */
 .tarjeta-plan-mini>* {
     position: relative;
     z-index: 1;
 }
 
-/* Variante Destacada / Recomendada */
 .tarjeta-plan-mini.destacada {
     border-color: rgba(255, 215, 0, 0.5);
     box-shadow: 0 0 24px rgba(255, 215, 0, 0.2), var(--sombra-media);
@@ -1027,14 +878,12 @@ textarea {
     text-align: center;
 }
 
-/* Tipografía de Precio con Caracteres Numéricos Tabulares */
 .tarjeta-plan-mini .precio {
     font-size: 1.75rem;
     font-weight: 700;
     color: var(--color-texto-blanco);
     margin: 0.6rem 0;
     text-align: center;
-    /* Fija el ancho idéntico para cada número evitando que el diseño tiemble */
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
 }
@@ -1061,22 +910,9 @@ textarea {
     }
 }
 
-
 /* ==============================================================================
    8. VENTANAS MODALES EMERGENTES (GLASSMORPHISM Y FÍSICA DRAWER)
-   Memoria Técnica Nivel FP DAW:
-   1. Glassmorphism Legítimo: El filtro backdrop-filter sólo es admisible en
-      elementos superpuestos y flotantes como los modales, ya que no intervienen
-      en el flujo continuo del scroll y no saturan el hilo de renderizado.
-   2. Física de Escala (scale(0.95) en lugar de scale(0)): Las hojas emergentes
-      físicas no "nacen de un punto infinitesimal", sino que avanzan en el eje Z
-      desde un plano cercano hacia el observador. Iniciar en 0.95 aporta una
-      sensación natural, elegante y perceptual mente estable.
-   3. Curva --ease-drawer: Desaceleración suave diseñada para transiciones de
-      componentes que capturan el foco del usuario.
    ============================================================================== */
-
-/* Fondo oscuro flotante con desenfoque de profundidad */
 .modal-fondo {
     display: none;
     position: fixed;
@@ -1093,7 +929,6 @@ textarea {
     padding: 1.5rem;
 }
 
-/* Contenedor central del modal */
 .modal-contenido-magico {
     background: linear-gradient(145deg, rgba(22, 25, 54, 0.94) 0%, rgba(12, 14, 34, 0.98) 100%);
     padding: 2.5rem;
@@ -1103,7 +938,6 @@ textarea {
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow: var(--sombra-flotante), var(--brillo-bisel-interior);
-    /* Entrada suave tipo hoja emergente respetando Emil Kowalski */
     animation: entradaModalDrawer 240ms var(--ease-drawer) forwards;
 }
 
@@ -1119,20 +953,17 @@ textarea {
     letter-spacing: -0.01em;
 }
 
-/* Animación de apertura: entra desde scale(0.95) y translateY(12px), jamás desde 0 */
 @keyframes entradaModalDrawer {
     from {
         opacity: 0;
         transform: scale(0.95) translateY(12px);
     }
-
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
     }
 }
 
-/* Botón de cierre en micro-cápsula circular táctil */
 .boton-cerrar {
     position: absolute;
     top: 18px;
@@ -1209,7 +1040,6 @@ textarea {
     position: relative;
 }
 
-/* Botón de Google estructurado con respuesta háptica */
 .boton-google {
     width: 100%;
     padding: 0.75rem 1.4rem;
@@ -1248,7 +1078,6 @@ textarea {
 
 .boton-google:focus-visible {
     outline: 2px solid #080914;
-    /* Contraste 18:1 sobre botón blanco (WCAG AA) */
     outline-offset: 3px;
 }
 
@@ -1257,7 +1086,6 @@ textarea {
     height: 20px;
     object-fit: contain;
 }
-
 
 /* ==============================================================================
    9. MODAL DE PANTALLA DE CARGA MÁGICA (LOADING SCREEN)
@@ -1313,331 +1141,33 @@ textarea {
     line-height: 1.6;
 }
 
-/* Animación de rotación continua de 360 grados */
 @keyframes giroInfinitoEstrella {
     0% {
         transform: rotate(0deg);
     }
-
     100% {
         transform: rotate(360deg);
     }
 }
 
-/* Animación de latido y resplandor pulsante */
 @keyframes latidoResplandorCarga {
     0% {
         transform: scale(0.92);
         filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));
     }
-
     100% {
         transform: scale(1.08);
         filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 35px rgba(255, 118, 172, 0.5));
     }
 }
 
-
 /* ==============================================================================
-   10. VISOR DE LIBRO MÁGICO ABIERTO (LECTURA DEL CUENTO)
-   Diseño de dos páginas abiertas con efecto de papel antiguo y lomo central.
-   ============================================================================== */
-#visor-libro {
-    background-color: rgba(6, 7, 20, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    z-index: 10002;
-}
-
-.libro-abierto-contenedor {
-    position: relative;
-    width: 94%;
-    max-width: 980px;
-    max-height: 90vh;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Encuadernación y papel de doble página con pliegue sombreado en el centro */
-.cubierta-libro {
-    background: linear-gradient(to right,
-            #f6f0e2 0%,
-            #fdfbf7 46%,
-            #dfd5c0 50%,
-            #fdfbf7 54%,
-            #f6f0e2 100%);
-    color: #2b2214;
-    border-radius: 20px;
-    border: 7px solid #382415;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8),
-        0 0 30px rgba(255, 215, 0, 0.2),
-        inset 0 0 40px rgba(0, 0, 0, 0.06),
-        inset 0 0 90px rgba(210, 190, 155, 0.25);
-    padding: 2.2rem 3rem;
-    display: flex;
-    flex-direction: column;
-    max-height: 86vh;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Botón flotante para cerrar el visor del libro con respuesta háptica */
-.boton-cerrar-libro {
-    position: absolute;
-    top: -16px;
-    right: -16px;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: linear-gradient(180deg, #ffe066 0%, #ffd700 100%);
-    color: #1a1c38;
-    font-size: 1.8rem;
-    font-weight: 700;
-    border: 2px solid #ffffff;
-    box-shadow: var(--sombra-media);
-    cursor: pointer;
-    z-index: 25;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    transition: transform var(--duracion-inmediata) var(--ease-out),
-        background-color var(--duracion-inmediata) var(--ease-out);
-}
-
-@media (hover: hover) and (pointer: fine) {
-    .boton-cerrar-libro:hover {
-        transform: scale(1.1) rotate(90deg);
-        background: #ffea00;
-    }
-}
-
-.boton-cerrar-libro:active {
-    transform: scale(0.97) !important;
-    transition-duration: 80ms;
-}
-
-.boton-cerrar-libro:focus-visible {
-    outline: 2px solid var(--color-anillo-enfoque);
-    outline-offset: 3px;
-}
-
-.cabecera-libro {
-    text-align: center;
-    margin-bottom: 1.2rem;
-    border-bottom: 2px dashed rgba(140, 115, 75, 0.3);
-    padding-bottom: 0.8rem;
-}
-
-.adorno-libro {
-    font-size: 1.3rem;
-    margin-bottom: 0.3rem;
-    letter-spacing: 4px;
-}
-
-.titulo-cuento-libro {
-    font-family: 'Merriweather', 'Georgia', 'Playfair Display', serif;
-    font-size: 1.8rem;
-    color: #3b220c;
-    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
-    font-weight: bold;
-}
-
-/* Contenedor con scroll suave para cuentos de gran extensión */
-.paginas-libro {
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 0.6rem;
-    margin-bottom: 0.5rem;
-}
-
-/* Estilo de la barra de desplazamiento dentro del libro */
-.paginas-libro::-webkit-scrollbar {
-    width: 7px;
-}
-
-.paginas-libro::-webkit-scrollbar-track {
-    background: rgba(220, 205, 180, 0.3);
-    border-radius: 10px;
-}
-
-.paginas-libro::-webkit-scrollbar-thumb {
-    background: #bfa882;
-    border-radius: 10px;
-}
-
-/* Maquetación del cuento en 2 columnas fluidas simulando páginas enfrentadas */
-.cuerpo-cuento-libro {
-    column-count: 2;
-    column-gap: 50px;
-    column-rule: 1px solid rgba(160, 135, 100, 0.25);
-    font-family: 'Georgia', 'Merriweather', 'Crimson Text', serif;
-    font-size: 1.1rem;
-    line-height: 1.85;
-    color: #2b2214;
-    text-align: justify;
-}
-
-.cuerpo-cuento-libro p {
-    margin-bottom: 1.2rem;
-    text-indent: 1.5em;
-}
-
-/* La primera línea o párrafo no lleva sangría */
-.cuerpo-cuento-libro p:first-of-type {
-    text-indent: 0;
-}
-
-/* Letra capitular clásica de cuento infantil en el primer párrafo */
-.cuerpo-cuento-libro p:first-of-type::first-letter {
-    font-size: 2.8rem;
-    float: left;
-    line-height: 0.85;
-    margin-right: 0.4rem;
-    color: #b8860b;
-    font-family: 'Merriweather', 'Georgia', serif;
-    font-weight: bold;
-}
-
-.pie-libro {
-    text-align: center;
-    margin-top: 0.8rem;
-    padding-top: 0.6rem;
-    border-top: 1px solid rgba(140, 115, 75, 0.2);
-    font-size: 0.85rem;
-    color: #7a6a53;
-    font-style: italic;
-}
-
-/* Adaptación responsive para pantallas móviles y tablets */
-@media (max-width: 768px) {
-    .cubierta-libro {
-        padding: 1.8rem 1.4rem;
-        max-height: 88vh;
-        border-width: 5px;
-    }
-
-    .cuerpo-cuento-libro {
-        column-count: 1;
-        column-gap: 0;
-        column-rule: none;
-        font-size: 1.02rem;
-        line-height: 1.7;
-    }
-
-    .titulo-cuento-libro {
-        font-size: 1.4rem;
-    }
-
-    .boton-cerrar-libro {
-        top: -10px;
-        right: -10px;
-        width: 38px;
-        height: 38px;
-        font-size: 1.5rem;
-    }
-}
-
-/* ==============================================================================
-   ESTILOS DE LA BIBLIOTECA MÁGICA DE LIBROS (ZONA PRIVADA)
+   10. ESTANTERÍA DE LIBROS EN BIBLIOTECA (ZONA PRIVADA)
    ============================================================================== */
 .subtitulo-biblioteca {
     color: var(--color-texto-suave);
     margin-bottom: 2rem;
     font-size: 1.1rem;
-}
-
-.contenedor-biblioteca-libros {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-    max-width: 800px;
-    margin: 0 auto 3rem auto;
-    text-align: left;
-}
-
-.tarjeta-libro-biblioteca {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 20px;
-    padding: 1.2rem 1.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.tarjeta-libro-biblioteca:hover {
-    transform: translateY(-4px);
-    border-color: rgba(255, 215, 0, 0.5);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.15);
-}
-
-.icono-portada-libro {
-    font-size: 2.5rem;
-    background: rgba(255, 215, 0, 0.1);
-    width: 60px;
-    height: 60px;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border: 1px solid rgba(255, 215, 0, 0.2);
-}
-
-.info-libro {
-    flex: 1;
-}
-
-.info-libro h3 {
-    color: var(--color-dorado-estrella);
-    font-size: 1.25rem;
-    margin-bottom: 0.3rem;
-}
-
-.detalles-cuento {
-    color: var(--color-texto-blanco);
-    font-size: 0.95rem;
-    margin-bottom: 0.2rem;
-}
-
-.fecha-cuento {
-    color: var(--color-texto-suave);
-    font-size: 0.82rem;
-}
-
-.acciones-libro {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    flex-shrink: 0;
-}
-
-.boton-borrar-cuento {
-    background: rgba(255, 80, 80, 0.15);
-    border: 1px solid rgba(255, 80, 80, 0.4);
-    color: #ff6b6b;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    transition: background 0.2s, transform 0.2s;
-}
-
-.boton-borrar-cuento:hover {
-    background: rgba(255, 80, 80, 0.3);
-    transform: scale(1.1);
 }
 
 .sin-cuentos-aviso {
@@ -1651,38 +1181,6 @@ textarea {
     font-size: 1.1rem;
 }
 
-@media (max-width: 768px) {
-    .tarjeta-libro-biblioteca {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-
-    .acciones-libro {
-        width: 100%;
-        justify-content: space-between;
-    }
-}
-
-/* ==============================================================================
-   CUADRÍCULA 3X3 Y CUBIERTAS DE LIBRO CERRADO
-   ============================================================================== */
-.cuadricula-biblioteca-libros {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-/* ==============================================================================
-   CUADRÍCULA Y CUBIERTAS DE LIBRO EN ESTANTERÍA (ZONA PRIVADA)
-   Memoria Técnica Nivel FP DAW:
-   1. Interacción Háptica en Estantería: La tarjeta del libro cerrado responde
-      en :active con transform: scale(0.98) inmediato (80ms).
-   2. Botón de Borrado "Island": Se erradican emojis flotantes (🗑️) sustituyéndolos
-      por una píldora ergonómica con micro-cápsula independiente y alto contraste.
-   ============================================================================== */
 .cuadricula-biblioteca-libros {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1744,7 +1242,6 @@ textarea {
     font-style: italic;
 }
 
-/* Botón de Borrado tipo "Island Button" con Micro-cápsula (Sin Emojis Sueltos) */
 .boton-borrar-cuento-portada {
     background: rgba(10, 11, 28, 0.82);
     border: 1px solid rgba(255, 77, 109, 0.45);
@@ -1802,16 +1299,67 @@ textarea {
 }
 
 /* ==============================================================================
-   10. VISOR DE LIBRO MÁGICO ABIERTO Y FÍSICA 3D DE VOLTEO DE PÁGINA
-   Memoria Técnica Nivel FP DAW:
-   1. Cámara 3D (perspective: 1200px): La perspectiva define la distancia de
-      visión al plano Z=0, aportando deformación angular realista en el giro.
-   2. Eje Vertical (rotateY): El giro del papel ocurre exclusivamente sobre el
-      eje Y acelerado al 100% por GPU (sin coste de layout ni reflujo).
-   3. Ocultamiento de Cara Posterior (backface-visibility: hidden): Evita el
-      repintado de caras inversas en rotaciones pronunciadas.
-   4. Fluidez Orgánica (--ease-in-out): Aporta inercia al movimiento del papel.
+   11. VISOR DE LIBRO MÁGICO ABIERTO Y FÍSICA 3D DE VOLTEO DE PÁGINA
    ============================================================================== */
+#visor-libro {
+    background-color: rgba(6, 7, 20, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 10002;
+}
+
+.libro-abierto-contenedor {
+    position: relative;
+    width: 94%;
+    max-width: 980px;
+    max-height: 90vh;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.boton-cerrar-libro {
+    position: absolute;
+    top: -16px;
+    right: -16px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffe066 0%, #ffd700 100%);
+    color: #1a1c38;
+    font-size: 1.8rem;
+    font-weight: 700;
+    border: 2px solid #ffffff;
+    box-shadow: var(--sombra-media);
+    cursor: pointer;
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform var(--duracion-inmediata) var(--ease-out),
+        background-color var(--duracion-inmediata) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .boton-cerrar-libro:hover {
+        transform: scale(1.1) rotate(90deg);
+        background: #ffea00;
+    }
+}
+
+.boton-cerrar-libro:active {
+    transform: scale(0.97) !important;
+    transition-duration: 80ms;
+}
+
+.boton-cerrar-libro:focus-visible {
+    outline: 2px solid var(--color-anillo-enfoque);
+    outline-offset: 3px;
+}
+
 .cubierta-libro-imagen-base {
     position: relative;
     width: 1000px;
@@ -1842,7 +1390,6 @@ textarea {
     text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
-/* Contenedor Padre con Perspectiva 3D */
 .paginas-libro-imagen {
     flex: 1;
     z-index: 5;
@@ -1852,7 +1399,6 @@ textarea {
     perspective-origin: center;
 }
 
-/* Contenedor de Texto en 2 Columnas (ESTRUCTURA RIGUROSAMENTE CONSERVADA) */
 .cuerpo-cuento-imagen {
     font-family: 'Georgia', 'Merriweather', serif;
     font-size: clamp(0.82rem, 1.8vw, 1.05rem);
@@ -1864,7 +1410,6 @@ textarea {
     overflow: hidden;
     column-count: 2;
     column-gap: 110px;
-    /* Propiedades para la aceleración y conservación del espacio 3D */
     backface-visibility: hidden;
     transform-style: preserve-3d;
     transform-origin: center center;
@@ -1875,8 +1420,12 @@ textarea {
     text-indent: 1.2em;
 }
 
-/* Capitular de inicio de cuento */
-.cuerpo-cuento-imagen p:first-of-type::first-letter {
+/* Capitular aplicada ÚNICAMENTE al primer párrafo real del cuento */
+.cuerpo-cuento-imagen p.primer-parrafo-cuento {
+    text-indent: 0;
+}
+
+.cuerpo-cuento-imagen p.primer-parrafo-cuento::first-letter {
     font-size: clamp(1.8rem, 3.8vw, 2.8rem);
     float: left;
     line-height: 0.85;
@@ -1885,23 +1434,19 @@ textarea {
     font-weight: bold;
 }
 
-/* Animaciones 3D de volteo de página por GPU */
 @keyframes volteoPaginaDerecha {
     0% {
         transform: rotateY(0deg);
         opacity: 1;
     }
-
     45% {
         transform: rotateY(-18deg) scale(0.98);
         opacity: 0.35;
     }
-
     55% {
         transform: rotateY(18deg) scale(0.98);
         opacity: 0.35;
     }
-
     100% {
         transform: rotateY(0deg);
         opacity: 1;
@@ -1913,17 +1458,14 @@ textarea {
         transform: rotateY(0deg);
         opacity: 1;
     }
-
     45% {
         transform: rotateY(18deg) scale(0.98);
         opacity: 0.35;
     }
-
     55% {
         transform: rotateY(-18deg) scale(0.98);
         opacity: 0.35;
     }
-
     100% {
         transform: rotateY(0deg);
         opacity: 1;
@@ -1960,9 +1502,6 @@ textarea {
     white-space: nowrap;
 }
 
-/* ------------------------------------------------------------------------------
-   BOTONES DE PAGINACIÓN INTERACTIVA (CONTROLES HÁPTICOS)
-   ------------------------------------------------------------------------------ */
 .zona-clic-pagina {
     position: absolute;
     top: 50%;
@@ -2016,7 +1555,7 @@ textarea {
 }
 
 /* ==============================================================================
-   11. PANTALLA SUPERPUESTA DE AVISO DE GIRO (MÓVIL VERTICAL)
+   12. PANTALLA SUPERPUESTA DE AVISO DE GIRO (MÓVIL VERTICAL)
    ============================================================================== */
 .pantalla-aviso-giro {
     display: none;
@@ -2172,19 +1711,15 @@ textarea {
 }
 
 /* ==============================================================================
-   12. DISEÑO RESPONSIVE Y MEJORAS UI/UX MÓVIL (@media max-width: 768px)
+   13. DISEÑO RESPONSIVE Y MEJORAS UI/UX MÓVIL
    ============================================================================== */
-
-/* Tablets intermedias (769px a 900px): Cuadrícula de 2 columnas */
 @media (max-width: 900px) and (min-width: 769px) {
     .cuadricula-biblioteca-libros {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* Teléfonos y Dispositivos Móviles (<= 768px) */
 @media (max-width: 768px) {
-    /* 1. Header compacto y marca abreviada (DSAI) */
     .barra-navegacion {
         flex-wrap: nowrap;
         align-items: center;
@@ -2208,7 +1743,6 @@ textarea {
         white-space: nowrap;
     }
 
-    /* 2. Prioridad al saludo del usuario y botón de cierre (X) */
     .menu-enlaces {
         display: flex;
         align-items: center;
@@ -2254,11 +1788,7 @@ textarea {
         line-height: 1;
     }
 
-    /* Enlaces y botones de visitante en header móvil para garantizar single-line nowrap */
-    .menu-enlaces a:not([class*="boton-"]):not(.boton-cerrar-sesion) {
-        display: none;
-    }
-
+    .menu-enlaces a:not([class*="boton-"]):not(.boton-cerrar-sesion),
     .menu-enlaces .boton-plan-link {
         display: none;
     }
@@ -2269,7 +1799,6 @@ textarea {
         font-size: 0.8rem;
     }
 
-    /* 3. Tamaño amigable de los libros en la biblioteca móvil */
     .cuadricula-biblioteca-libros {
         grid-template-columns: 1fr;
         gap: 1.8rem;
@@ -2311,13 +1840,23 @@ textarea {
         height: 17px;
         font-size: 0.65rem;
     }
+
+    .titulo-cuento-imagen {
+        font-size: 1.2rem;
+    }
+
+    .boton-cerrar-libro {
+        top: -10px;
+        right: -10px;
+        width: 38px;
+        height: 38px;
+        font-size: 1.5rem;
+    }
 }
 
 /* ==============================================================================
-   13. LECTOR DE LIBRO ABIERTO: BLOQUEO VERTICAL + MODO HORIZONTAL MÓVIL
+   14. LECTOR DE LIBRO ABIERTO: BLOQUEO VERTICAL + MODO HORIZONTAL MÓVIL
    ============================================================================== */
-
-/* Aviso de giro en móvil vertical: Oculta libro abierto y muestra aviso centrado */
 @media (max-width: 768px) and (orientation: portrait) {
     #visor-libro .libro-abierto-contenedor {
         display: none !important;
@@ -2345,7 +1884,6 @@ textarea {
     }
 }
 
-/* Modo horizontal móvil y pantallas pequeñas: Ajuste de márgenes y tipografía al leer */
 @media (max-height: 600px) and (orientation: landscape) {
     #visor-libro {
         padding: 4px;
@@ -2369,7 +1907,6 @@ textarea {
         box-sizing: border-box;
     }
 
-    /* 1. Encajar el texto estrictamente dentro de las páginas de papel crema */
     .cubierta-libro-imagen-base {
         width: 100%;
         max-width: 100%;
@@ -2377,7 +1914,6 @@ textarea {
         max-height: 96vh;
         min-height: unset;
         box-sizing: border-box;
-        /* Entre un 14% y 16% de margen interior para confinar el texto únicamente sobre la zona clara del papel */
         padding: 18px 15% 26px 15%;
         box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
         position: relative;
@@ -2411,7 +1947,6 @@ textarea {
         max-height: calc(100% - 24px);
         overflow: hidden;
         column-count: 2;
-        /* Espacio central amplio junto al lomo del libro para no pisar el pliegue central */
         column-gap: clamp(50px, 12%, 85px);
     }
 
@@ -2421,8 +1956,12 @@ textarea {
         box-sizing: border-box;
     }
 
-    /* Letra capital reducida proporcionalmente para armonizar con el texto sin generar huecos */
-    .cuerpo-cuento-imagen p:first-of-type::first-letter {
+    /* Capitular en móvil horizontal ÚNICAMENTE en el primer párrafo real */
+    .cuerpo-cuento-imagen p.primer-parrafo-cuento {
+        text-indent: 0;
+    }
+
+    .cuerpo-cuento-imagen p.primer-parrafo-cuento::first-letter {
         font-size: clamp(1.3rem, 2.4vw, 1.65rem);
         line-height: 0.88;
         margin-right: 0.16rem;
@@ -2431,7 +1970,6 @@ textarea {
         font-weight: 700;
     }
 
-    /* 2. Subir y hacer legible el indicador de paginación ("Página X de Y") */
     .pie-libro-imagen {
         position: absolute;
         bottom: 11.5%;
@@ -2458,7 +1996,6 @@ textarea {
         white-space: nowrap;
     }
 
-    /* 3. Despejar los botones laterales (< y >) pegados a los bordes exteriores */
     .zona-clic-pagina {
         position: fixed !important;
         top: 50% !important;
