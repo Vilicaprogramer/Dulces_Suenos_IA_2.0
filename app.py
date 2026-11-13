@@ -43,18 +43,19 @@ url_base_datos = os.getenv('DATABASE_URL')
 if not url_base_datos:
     url_base_datos = 'sqlite:///base_datos_dulces_suenos.db'
 elif url_base_datos.startswith('postgres://'):
-    url_base_datos = url_base_datos.replace('postgres://', 'postgresql://', 1)
+    url_base_datos = url_base_datos.replace('postgres://', 'postgresql+psycopg://', 1)
+elif url_base_datos.startswith('postgresql://'):
+    url_base_datos = url_base_datos.replace('postgresql://', 'postgresql+psycopg://', 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = url_base_datos
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Evita errores de conexión cerrada cuando Neon entra en reposo
-if url_base_datos.startswith('postgresql://'):
+if url_base_datos.startswith('postgresql'):
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         'pool_pre_ping': True,
         'pool_recycle': 300,
     }
-
 # Recuperamos la clave secreta de la API de Google Gemini desde las variables de entorno
 CLAVE_API_GEMINI = os.getenv('GEMINI_API_KEY')
 
@@ -406,35 +407,35 @@ def cerrar_sesion():
 # 4. INICIALIZACIÓN DE LA BASE DE DATOS Y ARRANQUE DEL SERVIDOR
 # ==============================================================================
 
-if __name__ == '__main__':
-    with app.app_context():
-        # Creamos las tablas en la base de datos si todavía no existen
-        db.create_all()
+with app.app_context():
+    # Creamos las tablas en la base de datos si todavía no existen
+    db.create_all()
+    
+    # Insertamos los 3 planes de suscripción base si la tabla está vacía
+    plan_inicial_existente = db.session.get(TipoCuenta, 1)
+    if not plan_inicial_existente:
+        plan_free = TipoCuenta(id_tipo=1, nombre_plan='Free', limite_cuentos=5)
+        plan_premium = TipoCuenta(id_tipo=2, nombre_plan='Premium', limite_cuentos=20)
+        plan_ilimitado = TipoCuenta(id_tipo=3, nombre_plan='Ilimitado', limite_cuentos=-1)
         
-        # Insertamos los 3 planes de suscripción base si la tabla está vacía
-        plan_inicial_existente = db.session.get(TipoCuenta, 1)
-        if not plan_inicial_existente:
-            plan_free = TipoCuenta(id_tipo=1, nombre_plan='Free', limite_cuentos=5)
-            plan_premium = TipoCuenta(id_tipo=2, nombre_plan='Premium', limite_cuentos=20)
-            plan_ilimitado = TipoCuenta(id_tipo=3, nombre_plan='Ilimitado', limite_cuentos=-1)
-            
-            db.session.add_all([plan_free, plan_premium, plan_ilimitado])
-            db.session.commit()
-            print("INFO: Planes de suscripción creados en la base de datos.")
+        db.session.add_all([plan_free, plan_premium, plan_ilimitado])
+        db.session.commit()
+        print("INFO: Planes de suscripción creados en la base de datos.")
 
-        # Creamos una cuenta de Administrador por defecto si no existe
-        administrador_existente = Usuario.query.filter_by(correo_electronico='admin@dulcessuenos.ai').first()
-        if not administrador_existente:
-            clave_admin_encriptada = generate_password_hash('DulcesSuenos@I1982', method='pbkdf2:sha256')
-            cuenta_administrador = Usuario(
-                correo_electronico='admin@dulcessuenos.ai',
-                nombre_completo='Administrador Root',
-                contrasena_encriptada=clave_admin_encriptada,
-                id_tipo_cuenta=3
-            )
-            db.session.add(cuenta_administrador)
-            db.session.commit()
-            print("INFO: Usuario Administrador creado: admin@dulcessuenos.ai")
+    # Creamos una cuenta de Administrador por defecto si no existe
+    administrador_existente = Usuario.query.filter_by(correo_electronico='admin@dulcessuenos.ai').first()
+    if not administrador_existente:
+        clave_admin_encriptada = generate_password_hash('DulcesSuenos@I1982', method='pbkdf2:sha256')
+        cuenta_administrador = Usuario(
+            correo_electronico='admin@dulcessuenos.ai',
+            nombre_completo='Administrador Root',
+            contrasena_encriptada=clave_admin_encriptada,
+            id_tipo_cuenta=3
+        )
+        db.session.add(cuenta_administrador)
+        db.session.commit()
+        print("INFO: Usuario Administrador creado: admin@dulcessuenos.ai")
 
+if __name__ == '__main__':
     # Arrancamos el servidor de desarrollo de Flask
     app.run(host='0.0.0.0', port=5000, debug=True)
