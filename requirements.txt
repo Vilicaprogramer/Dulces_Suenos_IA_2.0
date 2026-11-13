@@ -6,4 +6,4 @@ python-dotenv==1.0.0
 google-generativeai
 requests
 gunicorn
-psycopg2-binary
+psycopg[binary]
