@@ -38,12 +38,22 @@ app.config['SECRET_KEY'] = 'clave_secreta_provisoria_dulces_suenos_2026'
 # Establecemos el tiempo máximo de inactividad de la sesión (30 minutos)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
-# Conexión a la base de datos (por defecto usará la base de datos SQLite local si no hay otra definida)
+# Conexión a la base de datos (SQLite en local o PostgreSQL en Neon si existe DATABASE_URL)
 url_base_datos = os.getenv('DATABASE_URL')
 if not url_base_datos:
     url_base_datos = 'sqlite:///base_datos_dulces_suenos.db'
+elif url_base_datos.startswith('postgres://'):
+    url_base_datos = url_base_datos.replace('postgres://', 'postgresql://', 1)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = url_base_datos
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Evita errores de conexión cerrada cuando Neon entra en reposo
+if url_base_datos.startswith('postgresql://'):
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
+    }
 
 # Recuperamos la clave secreta de la API de Google Gemini desde las variables de entorno
 CLAVE_API_GEMINI = os.getenv('GEMINI_API_KEY')
