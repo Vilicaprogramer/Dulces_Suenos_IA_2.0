@@ -69,6 +69,10 @@ function cerrar_ventana_modal(id) {
     if (modal) {
         modal.style.display = "none";
     }
+    if (id === "visor-libro" && cuentoRecienCreado) {
+        cuentoRecienCreado = false;
+        window.location.reload();
+    }
 }
 
 function configurar_eventos_globales_modales() {
