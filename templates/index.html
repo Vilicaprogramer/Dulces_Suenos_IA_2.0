@@ -162,17 +162,28 @@
                         <h3 class="titulo-portada">{{ cuento.titulo_cuento }}</h3>
                         <p class="autor-portada">Protagonista: {{ cuento.nombre_personaje }}</p>
                     </div>
-                    <form action="/borrar-cuento/{{ cuento.id_cuento }}" method="POST"
-                        class="form-borrar-cuento-portada"
-                        style="position: absolute; bottom: 14px; right: 14px; z-index: 5;"
-                        onclick="event.stopPropagation();">
-                        <button type="submit" class="boton-borrar-cuento-portada"
-                            onclick="return confirm('¿Seguro que quieres borrar este cuento?')"
-                            title="Borrar cuento" aria-label="Borrar cuento">
-                            <span class="capsula-icono">✕</span>
-                            <span>Borrar</span>
-                        </button>
-                    </form>
+
+                    <!-- Contenedor de acciones en la cubierta: Descargar en PDF y Eliminar cuento -->
+                    <div class="contenedor-acciones-portada" onclick="event.stopPropagation();">
+                        <a href="{{ url_for('descargar_cuento', id_cuento=cuento.id_cuento) }}"
+                            class="boton-descargar-cuento-portada"
+                            title="Descargar cuento en PDF"
+                            aria-label="Descargar cuento en PDF"
+                            onclick="event.stopPropagation();">
+                            <span class="capsula-icono">📄</span>
+                            <span>PDF</span>
+                        </a>
+                        <form action="/borrar-cuento/{{ cuento.id_cuento }}" method="POST"
+                            class="form-borrar-cuento-portada"
+                            onclick="event.stopPropagation();">
+                            <button type="submit" class="boton-borrar-cuento-portada"
+                                onclick="return confirm('¿Seguro que quieres borrar este cuento?')"
+                                title="Borrar cuento" aria-label="Borrar cuento">
+                                <span class="capsula-icono">✕</span>
+                                <span>Borrar</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
                 {% endfor %}
             </div>

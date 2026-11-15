@@ -6,12 +6,15 @@
 
 # Importamos las librerías necesarias del sistema y de Python
 import os
+import io
+import re
 from datetime import datetime, timedelta
 import requests
 from dotenv import load_dotenv
+from fpdf import FPDF
 
 # Importamos los componentes del framework Flask
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session, send_file
 
 # Importamos el ORM SQLAlchemy para interactuar con la base de datos
 from flask_sqlalchemy import SQLAlchemy
@@ -124,6 +127,8 @@ class Cuento(db.Model):
     valor_moral = db.Column(db.String(100))
     tematica = db.Column(db.String(100))
     fecha_creacion = db.Column(db.DateTime, server_default=db.func.now())
+    # Campo booleano para borrado lógico (True = visible en la estantería del usuario)
+    visible_biblioteca = db.Column(db.Boolean, default=True, nullable=False)
 
 
 # Función que utiliza Flask-Login para recargar el objeto de usuario desde la sesión
@@ -153,9 +158,10 @@ def pagina_inicio():
     
     # Comprobamos si el usuario actual ha iniciado sesión
     if current_user.is_authenticated:
-        # Obtenemos sus cuentos ordenados por fecha de creación descendente (más nuevos primero)
+        # Obtenemos SOLO sus cuentos visibles en la biblioteca ordenados por fecha de creación descendente
         lista_de_cuentos_del_usuario = Cuento.query.filter_by(
-            id_usuario_dueno=current_user.id_usuario
+            id_usuario_dueno=current_user.id_usuario,
+            visible_biblioteca=True
         ).order_by(Cuento.fecha_creacion.desc()).all()
     
     return render_template('index.html', mis_cuentos=lista_de_cuentos_del_usuario)
@@ -377,7 +383,7 @@ def generar_cuento():
     }), 200
 
 
-# Ruta 5: Borrar un cuento perteneciente al usuario logueado
+# Ruta 5: Borrado lógico de un cuento perteneciente al usuario logueado
 @app.route('/borrar-cuento/<int:id_cuento>', methods=['POST'])
 @login_required
 def borrar_cuento(id_cuento):
@@ -387,14 +393,134 @@ def borrar_cuento(id_cuento):
     ).first()
     
     if cuento_a_borrar:
-        db.session.delete(cuento_a_borrar)
+        # En lugar de borrar físicamente el registro (db.session.delete), realizamos un borrado lógico
+        # asignando visible_biblioteca = False. De este modo el cuento no aparece en la biblioteca,
+        # pero la cuota mensual de cuentos creados se mantiene intacta para evitar abusos.
+        cuento_a_borrar.visible_biblioteca = False
         db.session.commit()
-        flash('Cuento eliminado de tu biblioteca personal.')
+        flash('Cuento retirado de tu biblioteca personal.')
         
     return redirect(url_for('pagina_inicio'))
 
 
-# Ruta 6: Cierre de la sesión activa
+# Función auxiliar para sanear texto antes de pasarlo a FPDF (evita errores con comillas tipográficas o emojis)
+def limpiar_texto_para_pdf(texto_original):
+    """
+    Sustituye comillas curvas, guiones largos y retira emojis para que las fuentes
+    estándar de FPDF no lancen error de codificación, respetando tildes y la letra eñe.
+    """
+    if not texto_original:
+        return ""
+    reemplazos_caracteres = {
+        '“': '"', '”': '"', '‘': "'", '’': "'",
+        '—': '-', '–': '-', '…': '...', '«': '"', '»': '"'
+    }
+    for caracter_origen, caracter_destino in reemplazos_caracteres.items():
+        texto_original = texto_original.replace(caracter_origen, caracter_destino)
+    # Codificamos a latin-1 ignorando caracteres especiales incompatibles con la fuente
+    return texto_original.encode('latin-1', 'ignore').decode('latin-1')
+
+
+# Ruta 6: Descargar un cuento en formato PDF maquetado para lectura infantil
+@app.route('/descargar-cuento/<int:id_cuento>')
+@login_required
+def descargar_cuento(id_cuento):
+    # Buscamos el cuento verificando que pertenezca al usuario actualmente autenticado
+    cuento_a_descargar = Cuento.query.filter_by(
+        id_cuento=id_cuento,
+        id_usuario_dueno=current_user.id_usuario
+    ).first()
+
+    # Si no existe o pertenece a otro usuario, redirigimos a la página de inicio
+    if not cuento_a_descargar:
+        flash('El cuento solicitado no existe o no tienes permiso para descargarlo.')
+        return redirect(url_for('pagina_inicio'))
+
+    # Clase personalizada que hereda de FPDF para gestionar encabezado y pie de página
+    class CuentoInfantilPDF(FPDF):
+        def header(self):
+            # Encabezado sutil con el nombre de la plataforma
+            self.set_font('Helvetica', 'I', 9)
+            self.set_text_color(140, 145, 170)
+            self.cell(0, 8, 'Dulces Sueños AI - Cuentos Mágicos Infantiles', align='C', new_x='LMARGIN', new_y='NEXT')
+            self.ln(4)
+
+        def footer(self):
+            # Pie de página situado a 15 mm del borde inferior
+            self.set_y(-15)
+            self.set_font('Helvetica', 'I', 8)
+            self.set_text_color(150, 150, 165)
+            texto_pie = f"Página {self.page_no()} | Creado con magia en Dulces Sueños AI"
+            self.cell(0, 10, texto_pie, align='C')
+
+    # Inicializamos el documento en formato A4 vertical
+    pdf = CuentoInfantilPDF(orientation='P', unit='mm', format='A4')
+    pdf.set_auto_page_break(auto=True, margin=20)
+    
+    # Márgenes amplios y cómodos: 22 mm en los laterales y 20 mm arriba y abajo
+    pdf.set_margins(left=22, top=20, right=22)
+    pdf.add_page()
+
+    # Título del cuento grande, centrado y destacado en color azul marino nocturno
+    pdf.set_font('Helvetica', 'B', 18)
+    pdf.set_text_color(24, 28, 64)
+    titulo_limpio = limpiar_texto_para_pdf(cuento_a_descargar.titulo_cuento)
+    pdf.multi_cell(0, 10, titulo_limpio, align='C', new_x='LMARGIN', new_y='NEXT')
+    pdf.ln(2)
+
+    # Subtítulo con el nombre del protagonista si está disponible
+    if cuento_a_descargar.nombre_personaje:
+        pdf.set_font('Helvetica', 'I', 11)
+        pdf.set_text_color(180, 130, 40) # Tono dorado cálido
+        personaje_limpio = limpiar_texto_para_pdf(cuento_a_descargar.nombre_personaje)
+        texto_subtitulo = f"Una aventura mágica protagonizada por {personaje_limpio}"
+        pdf.cell(0, 8, texto_subtitulo, align='C', new_x='LMARGIN', new_y='NEXT')
+        pdf.ln(4)
+
+    # Línea divisoria decorativa suave en la cabecera
+    pdf.set_draw_color(225, 215, 185)
+    pdf.set_line_width(0.4)
+    x_inicial = 40
+    x_final = pdf.w - 40
+    y_linea = pdf.get_y()
+    pdf.line(x_inicial, y_linea, x_final, y_linea)
+    pdf.ln(8)
+
+    # Cuerpo del cuento con tipografía legible de 13 pt e interlineado cómodo (8.5 mm)
+    pdf.set_font('Helvetica', '', 13)
+    pdf.set_text_color(45, 45, 55) # Tinta oscura para máxima nitidez
+
+    # Dividimos el texto del cuento en párrafos
+    parrafos_del_cuento = cuento_a_descargar.texto_cuento.split('\n')
+    for parrafo in parrafos_del_cuento:
+        parrafo_procesado = limpiar_texto_para_pdf(parrafo.strip())
+        if parrafo_procesado:
+            # Alineamos de forma justificada y dejamos espacio de 4 mm entre párrafos
+            pdf.multi_cell(0, 8.5, parrafo_procesado, align='J', new_x='LMARGIN', new_y='NEXT')
+            pdf.ln(4)
+
+    # Guardamos el archivo PDF generado en un buffer de memoria BytesIO
+    buffer_memoria_pdf = io.BytesIO()
+    pdf.output(buffer_memoria_pdf)
+    buffer_memoria_pdf.seek(0)
+
+    # Creamos un nombre de archivo seguro a partir del título del cuento
+    nombre_limpio_archivo = re.sub(r'[^\w\s-]', '', cuento_a_descargar.titulo_cuento.lower())
+    nombre_limpio_archivo = re.sub(r'[-\s]+', '_', nombre_limpio_archivo).strip('_')
+    if not nombre_limpio_archivo:
+        nombre_limpio_archivo = 'cuento_dulces_suenos'
+    nombre_final_pdf = f"{nombre_limpio_archivo}.pdf"
+
+    # Enviamos el archivo directamente al navegador para su descarga
+    return send_file(
+        buffer_memoria_pdf,
+        as_attachment=True,
+        download_name=nombre_final_pdf,
+        mimetype='application/pdf'
+    )
+
+
+# Ruta 7: Cierre de la sesión activa
 @app.route('/logout')
 @login_required
 def cerrar_sesion():
@@ -411,6 +537,20 @@ with app.app_context():
     # Creamos las tablas en la base de datos si todavía no existen
     db.create_all()
     
+    # Comprobación de seguridad para añadir la columna 'visible_biblioteca' si no existe aún
+    # Permite migración automática sin perder cuentos existentes en SQLite o PostgreSQL (Neon)
+    try:
+        db.session.execute(db.text("ALTER TABLE cuentos ADD COLUMN IF NOT EXISTS visible_biblioteca BOOLEAN DEFAULT TRUE;"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        try:
+            # En SQLite estándar donde 'IF NOT EXISTS' no se admita en ADD COLUMN
+            db.session.execute(db.text("ALTER TABLE cuentos ADD COLUMN visible_biblioteca BOOLEAN DEFAULT TRUE;"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
     # Insertamos los 3 planes de suscripción base si la tabla está vacía
     plan_inicial_existente = db.session.get(TipoCuenta, 1)
     if not plan_inicial_existente:

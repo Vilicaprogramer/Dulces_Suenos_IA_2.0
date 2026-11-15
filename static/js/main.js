@@ -187,6 +187,7 @@ function paginarTextoPorAlturaReal(texto) {
     medidor.style.boxSizing = estilos.boxSizing;
     medidor.style.columnCount = estilos.columnCount;
     medidor.style.columnGap = estilos.columnGap;
+    medidor.style.columnFill = "auto";
     medidor.style.overflow = "hidden";
     cuerpo.parentElement.appendChild(medidor);
 
