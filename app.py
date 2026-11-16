@@ -97,8 +97,7 @@ class Usuario(UserMixin, db.Model):
     id_usuario = db.Column(db.Integer, primary_key=True)
     correo_electronico = db.Column(db.String(120), unique=True, nullable=False)
     contrasena_encriptada = db.Column(db.String(255), nullable=True)
-    # Columna 'nombre' para guardar el nombre de pila o apodo del usuario
-    nombre = db.Column(db.String(100), nullable=True)
+    # Columna 'nombre_completo' para guardar el nombre o apodo del usuario
     nombre_completo = db.Column(db.String(100), nullable=True)
     id_google = db.Column(db.String(255), unique=True, nullable=True)
     
@@ -173,13 +172,13 @@ def pagina_inicio():
 @app.route('/registro', methods=['POST'])
 def registrar_usuario():
     # Recogemos los datos enviados desde el formulario HTML de registro
-    nombre_usuario = request.form.get('nombre', '').strip()
+    nombre_introducido = request.form.get('nombre_usuario', '').strip()
     correo_introducido = request.form.get('correo_usuario', '').strip()
     clave_introducida = request.form.get('clave_usuario', '')
     
     # Validamos que el usuario haya escrito su nombre
-    if not nombre_usuario:
-        flash('Por favor, introduce tu nombre para completar el registro.')
+    if not nombre_introducido:
+        flash('Por favor, introduce tu nombre para registrarte.')
         return redirect(url_for('pagina_inicio'))
 
     # Validamos que se haya introducido un correo electrónico
@@ -201,11 +200,10 @@ def registrar_usuario():
     # Encriptamos la contraseña utilizando el algoritmo PBKDF2 con SHA-256
     clave_encriptada_segura = generate_password_hash(clave_introducida, method='pbkdf2:sha256')
     
-    # Creamos la nueva instancia de usuario con el plan gratuito (ID 1) y su nombre asignado
+    # Creamos la nueva instancia de usuario con el plan gratuito (ID 1) y su nombre completo asignado
     nuevo_usuario = Usuario(
         correo_electronico=correo_introducido,
-        nombre=nombre_usuario,
-        nombre_completo=nombre_usuario,
+        nombre_completo=nombre_introducido,
         contrasena_encriptada=clave_encriptada_segura,
         id_tipo_cuenta=1
     )
@@ -216,7 +214,7 @@ def registrar_usuario():
     
     # Iniciamos sesión automáticamente para mejorar la experiencia del usuario
     login_user(nuevo_usuario)
-    flash(f'¡Registro completado con éxito! Bienvenido a Dulces Sueños, {nombre_usuario}.')
+    flash(f'¡Registro completado con éxito! Bienvenido a Dulces Sueños, {nombre_introducido}.')
     return redirect(url_for('pagina_inicio'))
 
 
