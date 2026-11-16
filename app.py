@@ -97,6 +97,8 @@ class Usuario(UserMixin, db.Model):
     id_usuario = db.Column(db.Integer, primary_key=True)
     correo_electronico = db.Column(db.String(120), unique=True, nullable=False)
     contrasena_encriptada = db.Column(db.String(255), nullable=True)
+    # Columna 'nombre' para guardar el nombre de pila o apodo del usuario
+    nombre = db.Column(db.String(100), nullable=True)
     nombre_completo = db.Column(db.String(100), nullable=True)
     id_google = db.Column(db.String(255), unique=True, nullable=True)
     
@@ -171,10 +173,25 @@ def pagina_inicio():
 @app.route('/registro', methods=['POST'])
 def registrar_usuario():
     # Recogemos los datos enviados desde el formulario HTML de registro
-    correo_introducido = request.form.get('correo_usuario')
-    nombre_introducido = request.form.get('nombre_usuario')
-    clave_introducida = request.form.get('clave_usuario')
+    nombre_usuario = request.form.get('nombre', '').strip()
+    correo_introducido = request.form.get('correo_usuario', '').strip()
+    clave_introducida = request.form.get('clave_usuario', '')
     
+    # Validamos que el usuario haya escrito su nombre
+    if not nombre_usuario:
+        flash('Por favor, introduce tu nombre para completar el registro.')
+        return redirect(url_for('pagina_inicio'))
+
+    # Validamos que se haya introducido un correo electrónico
+    if not correo_introducido:
+        flash('Por favor, introduce una dirección de correo electrónico válida.')
+        return redirect(url_for('pagina_inicio'))
+
+    # Validamos que se haya introducido una contraseña
+    if not clave_introducida:
+        flash('Por favor, introduce una contraseña para tu cuenta.')
+        return redirect(url_for('pagina_inicio'))
+
     # Comprobamos si ya existe una cuenta con este correo en la base de datos
     usuario_existente = Usuario.query.filter_by(correo_electronico=correo_introducido).first()
     if usuario_existente:
@@ -184,10 +201,11 @@ def registrar_usuario():
     # Encriptamos la contraseña utilizando el algoritmo PBKDF2 con SHA-256
     clave_encriptada_segura = generate_password_hash(clave_introducida, method='pbkdf2:sha256')
     
-    # Creamos la nueva instancia de usuario con el plan gratuito (ID 1)
+    # Creamos la nueva instancia de usuario con el plan gratuito (ID 1) y su nombre asignado
     nuevo_usuario = Usuario(
         correo_electronico=correo_introducido,
-        nombre_completo=nombre_introducido,
+        nombre=nombre_usuario,
+        nombre_completo=nombre_usuario,
         contrasena_encriptada=clave_encriptada_segura,
         id_tipo_cuenta=1
     )
@@ -198,7 +216,7 @@ def registrar_usuario():
     
     # Iniciamos sesión automáticamente para mejorar la experiencia del usuario
     login_user(nuevo_usuario)
-    flash('¡Registro completado con éxito! Bienvenido a Dulces Sueños.')
+    flash(f'¡Registro completado con éxito! Bienvenido a Dulces Sueños, {nombre_usuario}.')
     return redirect(url_for('pagina_inicio'))
 
 
@@ -551,6 +569,20 @@ with app.app_context():
         except Exception:
             db.session.rollback()
 
+    # Comprobación de seguridad para añadir la columna 'nombre' a la tabla 'usuarios' si no existe aún
+    # Permite migración automática sin perder cuentas de usuario existentes en SQLite o PostgreSQL (Neon)
+    try:
+        db.session.execute(db.text("ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS nombre VARCHAR(100);"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        try:
+            # En SQLite estándar donde 'IF NOT EXISTS' no se admita en ADD COLUMN
+            db.session.execute(db.text("ALTER TABLE usuarios ADD COLUMN nombre VARCHAR(100);"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+
     # Insertamos los 3 planes de suscripción base si la tabla está vacía
     plan_inicial_existente = db.session.get(TipoCuenta, 1)
     if not plan_inicial_existente:
@@ -568,6 +600,7 @@ with app.app_context():
         clave_admin_encriptada = generate_password_hash('DulcesSuenos@I1982', method='pbkdf2:sha256')
         cuenta_administrador = Usuario(
             correo_electronico='admin@dulcessuenos.ai',
+            nombre='Administrador',
             nombre_completo='Administrador Root',
             contrasena_encriptada=clave_admin_encriptada,
             id_tipo_cuenta=3
