@@ -30,7 +30,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # ------------------------------------------------------------------------------
 
 # Cargamos las variables privadas definidas en el archivo .env (claves de API, etc.)
-load_dotenv()
+load_dotenv(override=False)
 
 # Inicializamos la aplicación principal de Flask
 app = Flask(__name__)
@@ -38,8 +38,8 @@ app = Flask(__name__)
 # Clave secreta para firmar las cookies de sesión y mensajes flash
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'clave_secreta_provisoria_dulces_suenos_2026')
 
-# Establecemos el tiempo máximo de inactividad de la sesión (30 minutos)
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+# Establecemos el tiempo máximo de inactividad de la sesión (60 minutos)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=60)
 
 # Conexión a la base de datos (SQLite en local o PostgreSQL en Neon si existe DATABASE_URL)
 url_base_datos = os.getenv('DATABASE_URL')
@@ -99,7 +99,6 @@ class Usuario(UserMixin, db.Model):
     contrasena_encriptada = db.Column(db.String(255), nullable=True)
     # Columna 'nombre_completo' para guardar el nombre o apodo del usuario
     nombre_completo = db.Column(db.String(100), nullable=True)
-    id_google = db.Column(db.String(255), unique=True, nullable=True)
     
     # Clave foránea que relaciona al usuario con un plan de suscripción
     id_tipo_cuenta = db.Column(db.Integer, db.ForeignKey('tipos_cuenta.id_tipo'), default=1)
@@ -111,8 +110,7 @@ class Usuario(UserMixin, db.Model):
     # Método obligatorio de Flask-Login para obtener el identificador único del usuario
     def get_id(self):
         return str(self.id_usuario)
-
-
+    
 class Cuento(db.Model):
     """
     Tabla 'cuentos': Guarda los cuentos generados por cada usuario con la IA.
@@ -598,7 +596,6 @@ with app.app_context():
         clave_admin_encriptada = generate_password_hash('DulcesSuenos@I1982', method='pbkdf2:sha256')
         cuenta_administrador = Usuario(
             correo_electronico='admin@dulcessuenos.ai',
-            nombre='Administrador',
             nombre_completo='Administrador Root',
             contrasena_encriptada=clave_admin_encriptada,
             id_tipo_cuenta=3

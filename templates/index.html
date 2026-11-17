@@ -46,7 +46,7 @@
             <!-- Condicional Jinja2: Comprobamos si el usuario ha iniciado sesión -->
             {% if current_user.is_authenticated %}
             <!-- Si tiene sesión iniciada, mostramos un saludo y el botón para cerrar sesión -->
-            <span class="saludo-usuario" title="Hola, {{ current_user.nombre if current_user.nombre else current_user.correo_electronico }}">Hola, {{ current_user.nombre if current_user.nombre else current_user.correo_electronico }}</span>
+            <span class="saludo-usuario" title="Hola, {{ current_user.nombre_completo if current_user.nombre_completo else current_user.correo_electronico }}">Hola, {{ current_user.nombre_completo if current_user.nombre_completo else current_user.correo_electronico }}</span>
             <a href="/logout" class="boton-secundario boton-cerrar-sesion" title="Cerrar Sesión" aria-label="Cerrar Sesión">
                 <span class="texto-cerrar-sesion">Cerrar Sesión</span>
                 <span class="icono-cerrar-sesion" aria-hidden="true">✕</span>
@@ -91,7 +91,7 @@
             <div id="contenedor-formulario-crear" style="display: none; margin-bottom: 3rem;">
                 <div class="tarjeta-magica-hero" style="margin: 0 auto;">
                     <h2>Panel de Creación de Cuentos</h2>
-                    <p>Bienvenido/a, <strong>{{ current_user.nombre if current_user.nombre else (current_user.nombre_completo or current_user.correo_electronico) }}</strong>.</p>
+                    <p>Bienvenido/a, <strong>{{ current_user.nombre_completo if current_user.nombre_completo else (current_user.nombre_completo or current_user.correo_electronico) }}</strong>.</p>
 
                     <!-- Formulario asíncrono para enviar los parámetros del cuento -->
                     <form action="/generar-cuento" method="POST" class="formulario-creador">
@@ -305,8 +305,8 @@
             <span class="boton-cerrar" onclick="cerrar_ventana_modal('modal-registro')">&times;</span>
             <h3>Crear Cuenta Gratis</h3>
             <form action="/registro" method="POST">
-                <label for="nombre">Tu nombre:</label>
-                <input type="text" id="nombre" name="nombre" placeholder="Ej. Vicente" required maxlength="100">
+                <label for="nombre_usuario">Tu nombre:</label>
+                <input type="text" id="nombre_usuario" name="nombre_usuario" placeholder="Ej. Vicente" required maxlength="100">
 
                 <label for="correo_usuario">Correo Electrónico:</label>
                 <input type="email" id="correo_usuario" name="correo_usuario" required placeholder="padres@correo.com">
